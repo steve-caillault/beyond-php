@@ -137,7 +137,7 @@ final class Core
 		{
 			$translations = [];
 			$file = strtolower(strtr($locale, [ '_' => '-' ])) . '.php';
-			$path = realpath('.' . DIRECTORY_SEPARATOR . 'translations' . DIRECTORY_SEPARATOR . $file);
+			$path = realpath('.' . DIRECTORY_SEPARATOR . 'resources' .  DIRECTORY_SEPARATOR . 'translations' . DIRECTORY_SEPARATOR . $file);
 			if($path !== FALSE)
 			{
 				$translations = include $path;
