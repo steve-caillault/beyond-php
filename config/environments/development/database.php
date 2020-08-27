@@ -7,7 +7,7 @@
 return [
 	'default'	=> [
 		'connection'	=> [
-			'dns'			=> 'mysql:host=localhost;dbname=beyond-php',
+			'dns'			=> 'mysql:host=localhost;dbname=beyond-php;charset=UTF8',
 			'username'		=> 'root',
 			'password'		=> NULL,
 		],

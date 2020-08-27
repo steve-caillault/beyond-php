@@ -12,9 +12,6 @@ return [
 			'dns'			=> NULL,
 			'username'		=> NULL,
 			'password'		=> NULL,
-			'options'		=> [
-				PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
-			],
 		],
 		'api'	=> Database::API_PDO,	
 	],

@@ -33,9 +33,7 @@ class PDO extends Database {
 		$dns = getArray($configuration, 'dns');
 		$username = getArray($configuration, 'username');
 		$password = getArray($configuration, 'password');
-		$options = getArray($configuration, 'options', []);
-		
-		$this->_connection = new ConnectionPDO($dns, $username, $password, $options);
+		$this->_connection = new ConnectionPDO($dns, $username, $password);
 	}
 	
 	/************************************************************************/
