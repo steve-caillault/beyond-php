@@ -4,8 +4,6 @@
  * Fichiers des fonctions
  */
 
-use Root\{ Core, Environment, Arr, Session, Debug, Log, Config, Redirect, URL };
-	
 /**
  * Redirection
  * @param string $path Chemin où rediriger
@@ -13,7 +11,7 @@ use Root\{ Core, Environment, Arr, Session, Debug, Log, Config, Redirect, URL };
  */
 function redirect(string $path) : void
 {
-	Redirect::process($path);
+	\Root\Redirect::process($path);
 }
 
 /**
@@ -24,7 +22,7 @@ function redirect(string $path) : void
  */
 function debug($variable, bool $exit = FALSE) : string
 {
-	$response = Debug::show($variable);
+	$response = \Root\Debug::show($variable);
 	
 	if($exit)
 	{
@@ -41,7 +39,7 @@ function debug($variable, bool $exit = FALSE) : string
  */
 function logMessage(string $message) : void
 {
-	Log::add($message);
+	\Root\Log::add($message);
 }
 
 /**
@@ -61,16 +59,26 @@ function exception(string $message, int $code = 500) : void
  */
 function environment() : string
 {
-	return Environment::getName();
+	return \Root\Environment::getName();
 }
 
 /**
  * Retourne la session
- * @return Session
+ * @return \Root\Session
  */
-function session() : Session
+function session() : \Root\Session
 {
-	return Session::instance();
+	return \Root\Session::instance();
+}
+
+/**
+ * Retourne le gestionnaire de cache dont le nom est en paramètre
+ * @param string $name Nom dans la configuration
+ * @return \Root\Cache\BaseCache
+ */
+function cache(string $name = \Root\Cache::CONFIG_DEFAULT) : \Root\Cache\BaseCache
+{
+	return \Root\Cache::instance($name);
 }
 
 /**
@@ -81,7 +89,7 @@ function session() : Session
  */
 function getConfig(string $key, $defaultValue = NULL)
 {
-	return Config::load($key, $defaultValue);
+	return \Root\Config::load($key, $defaultValue);
 }
 
 /**
@@ -91,7 +99,7 @@ function getConfig(string $key, $defaultValue = NULL)
  */
 function setLanguage(string $locale) : void
 {
-	Core::setLanguage($locale);
+	\Root\Core::setLanguage($locale);
 }
 
 /**
@@ -104,7 +112,7 @@ function setLanguage(string $locale) : void
  */
 function getArray(?array $array, $key, $default = NULL)
 {
-	return Arr::get($array, $key, $default);
+	return \Root\Arr::get($array, $key, $default);
 }
 
 /**
@@ -115,7 +123,7 @@ function getArray(?array $array, $key, $default = NULL)
  */
 function getURL(string $uri, bool $absolute = FALSE) : string
 {
-	return URL::get($uri, $absolute);
+	return \Root\URL::get($uri, $absolute);
 }
 
 /**
@@ -126,7 +134,8 @@ function getURL(string $uri, bool $absolute = FALSE) : string
  */
 function translate(string $string, array $options = [], ?string $locale = NULL) : string 
 {
-	$dataTranslate = getArray(Core::translations($locale), $string, $string);
+	$translations = \Root\Core::translations($locale);
+	$dataTranslate = getArray($translations, $string, $string);
 	if(is_string($dataTranslate))
 	{
 		return $dataTranslate;

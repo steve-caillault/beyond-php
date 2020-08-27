@@ -63,8 +63,8 @@ final class Environment extends Instanciable {
 			$data = [];
 			$pattern = '/^[^\=]+\=[^\=]+$/D';
 			
-			$file = @ fopen('.environment', 'r');
-			if(! $file)
+			$fileContent = @ file_get_contents('.environment');
+			if(! $fileContent)
 			{
 				self::$_maintenance = FALSE;
 				self::change(self::DEFAULT);
@@ -76,18 +76,16 @@ final class Environment extends Instanciable {
 			}
 			else
 			{
-				while(! feof($file))
+				$lines = explode(PHP_EOL, $fileContent);
+				foreach($lines as $line)
 				{
-					$line = trim(fgets($file));
-					if(preg_match($pattern, $line))
+					$lineContent = trim($line);
+					if(preg_match($pattern, $lineContent))
 					{
-						list($key, $value) = explode('=', $line);
+						list($key, $value) = explode('=', $lineContent);
 						$data[$key] = $value;
 					}
 				}
-				fclose($file);
-				
-				
 			}
 			$this->_data = $data;
 		}
@@ -130,29 +128,12 @@ final class Environment extends Instanciable {
 	{
 		if(self::$_name === NULL)
 		{
-			// Vérifit le cache
-			$cacheKey = Cache::KEY_ENVIRONMENT;
-			$cacheLifetime = 24 * 3600;
-			$cache = Cache::instance();
-			$name = $cache->get($cacheKey, $cacheLifetime);
-			
-			$mustUpdateCache = FALSE;
 			// Chargement du fichier d'environnement
-			if($name === NULL)
-			{
-				$name = self::instance()->getValue(self::KEY_NAME);
-				$mustUpdateCache = TRUE;
-			}
+			$name = self::instance()->getValue(self::KEY_NAME);
 			
 			if(! in_array($name, self::ENVIRONMENTS))
 			{
 				exception('Environnement incorrect.');
-			}
-			
-			// Mise à jour du cache
-			if($mustUpdateCache)
-			{
-				$cache->update($cacheKey, $name);
 			}
 			
 			self::$_name = $name;
@@ -176,7 +157,7 @@ final class Environment extends Instanciable {
 		$environment = getArray($data, self::KEY_NAME);
 		$maintenance = getArray($data, self::KEY_MAINTENANCE);
 		
-		fwrite($file, self::KEY_NAME . '=' . $environment . "\n");
+		fwrite($file, self::KEY_NAME . '=' . $environment . PHP_EOL);
 		fwrite($file, self::KEY_MAINTENANCE . '=' . $maintenance);
 		fclose($file);
 		
@@ -227,7 +208,6 @@ final class Environment extends Instanciable {
 			return FALSE;
 		}
 		
-		Cache::instance()->update(Cache::KEY_ENVIRONMENT, $environment);
 		self::$_name = $environment;
 		
 		return TRUE;

@@ -1,99 +1,71 @@
 <?php
 
 /**
- * Gestion de données en cache
+ * Gestionnaire de cache
  */
 
 namespace Root;
 
-class Cache extends Instanciable {
+use Root\Cache\BaseCache;
+
+class Cache {
 	
-	private const DIRECTORY = 'resources/cache/';
-	/***/
-	public const KEY_ENVIRONMENT = 'environment';
+	public const
+		CONFIG_DEFAULT = 'default',
+		/***/
+		TYPE_FILE = 'file',
+		TYPE_MEMCACHE = 'memcache'
+	;
 	
 	/**
-	 * Données en cache
+	 * Instances de cache
 	 * @var array
 	 */
-	private array $_data = [];
+	private static array $_instance = [];
 	
 	/****************************************************/
 	
 	/**
-	 * Retourne le chemin du fichier de cache de la clé en paramètre
-	 * @param string $key
-	 * @return string
+	 * Retourne le gestionnaire dont le nom est en paramètre
+	 * @param string $name
+	 * @return BaseCache
 	 */
-	private static function _filePath(string $key) : string
+	public static function instance(string $name = self::CONFIG_DEFAULT) : BaseCache
 	{
-		return (self::DIRECTORY . hash('sha256', $key));
-	}
-	
-	/****************************************************/
-	
-	/**
-	 * Retourne les données du cache dont la clé est en paramètre
-	 * @param string $key Clé pour identifier le cache
-	 * @param int $lifetime Durée de vie en seconde des données
-	 * @param mixed $default Valeur à retourner par défaut
-	 * @return mixed
-	 */
-	public function get(string $key, int $lifetime, $default = NULL)
-	{
-		if(! array_key_exists($key, $this->_data))
+		if(! array_key_exists($name, self::$_instance))
 		{
-			$filePath = $this->_filePath($key);
+			$config = getConfig('cache.' . $name, []);
+			$type = getArray($config, 'type');
 			
-			$data = $default;
-			
-			// Le fichier de cache n'existe pas
-			if(file_exists($filePath))
+			if($type === NULL)
 			{
-				// Les données de cache ont expirés
-				if((time() - filemtime($filePath)) > $lifetime)
+				exception('Type de configuration inconnu.');
+			}
+			
+			$namespaces = [ 'App', __NAMESPACE__, ];
+			$classFound = FALSE;
+			$class = NULL;
+			
+			foreach($namespaces as $namespace)
+			{
+				$class = $namespace . '\Cache\\' . Str::camelCase($type) . 'Cache';
+				if($classFound = class_exists($class))
 				{
-					unlink($filePath);
-				}
-				else
-				{
-					$fileContent = @ file_get_contents($filePath);
-					if($fileContent)
-					{
-						try {
-							$data = unserialize($fileContent);
-						} catch(\Exception $exception) {
-							
-						}
-					}
+					break;
 				}
 			}
 			
-			$this->_data[$key] = $data;
+			if(! $classFound)
+			{
+				exception(strtr('La classe :class n\'a pas été trouvé.', [
+					':class' => $class,
+				]));
+			}
+			
+			self::$_instance[$name] = $class::factory($config);
 		}
 		
-		return getArray($this->_data, $key);
-	}
-	
-	/****************************************************/
-	
-	/**
-	 * Met les données en cache
-	 * @param string $key Clé pour identifier le cache
-	 * @param mixed $data Données à mettre en cache
-	 * @return bool
-	 */
-	public function update(string $key, $data) : bool
-	{
-		$filePath = $this->_filePath($key);
-		
-		try {
-			$fileData = serialize($data);
-			$written = file_put_contents($filePath, $fileData, LOCK_EX);
-			return (is_int($written) AND $written > 0);
-		} catch(\Exception $exception) {
-			return FALSE;
-		}
+		return self::$_instance[$name];
 	}
 	
 	/****************************************************/
