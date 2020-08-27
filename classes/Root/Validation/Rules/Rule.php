@@ -86,6 +86,16 @@ abstract class Rule extends Instanciable {
 	}
 	
 	/**
+	 * Modification du message d'erreur
+	 * @param string $message
+	 * @return void
+	 */
+	public function setMessage(string $message) : void
+	{
+		$this->_error_message = $message;
+	}
+	
+	/**
 	 * Retourne la valeur
 	 * @return mixed
 	 */
