@@ -33,13 +33,19 @@ function debug($variable, bool $exit = FALSE) : string
 }
 
 /**
- * Ajoute un message dans un fichier
+ * Ajoute un message de log
  * @param string $message
+ * @param string $level Niveau d'urgence
+ * @param string $name Nom dans la configuration
  * @return void
  */
-function logMessage(string $message) : void
+function logMessage(
+	string $message, 
+	string $level = \Root\Log\BaseLog::LEVEL_DEBUG, 
+	string $name = \Root\Log::CONFIG_DEFAULT
+) : void
 {
-	\Root\Log::add($message);
+	\Root\Log::instance($name)->add($message, $level);
 }
 
 /**
