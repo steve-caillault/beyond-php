@@ -6,9 +6,9 @@
 
 namespace Root\Cache;
 
-use Root\Instanciable;
+use Root\Manager\BaseManager;
 
-abstract class BaseCache extends Instanciable {
+abstract class BaseCache extends BaseManager {
 	
 	/**
 	 * Données en cache

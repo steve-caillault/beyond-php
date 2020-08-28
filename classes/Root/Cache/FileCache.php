@@ -8,6 +8,8 @@ namespace Root\Cache;
 
 class FileCache extends BaseCache {
 	
+	public const TYPE = 'file';
+	
 	private const DIRECTORY = 'resources/cache/';
 	
 	/****************************************************/

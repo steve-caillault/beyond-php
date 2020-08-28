@@ -10,6 +10,8 @@ use Memcache;
 
 class MemcacheCache extends BaseCache {
 	
+	public const TYPE = 'memcache';
+	
 	/**
 	 * Connexion au serveur de cache
 	 * @var Memcache

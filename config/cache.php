@@ -5,13 +5,14 @@
  */
 
 use Root\Cache;
+use Root\Cache\FileCache;
 
 return [
 	Cache::CONFIG_DEFAULT => [
-		'type' => Cache::TYPE_FILE,
+		'type' => FileCache::TYPE,
 	],
 	/*Cache::CONFIG_DEFAULT => [
-		'type' => Cache::TYPE_MEMCACHE,
+		'type' => \Root\Cache\MemcacheCache::TYPE,
 		'connection' => [
 			'host' => 'localhost',
 			'port' => 11211,
