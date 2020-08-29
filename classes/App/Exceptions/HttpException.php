@@ -22,6 +22,7 @@ class HttpException {
 		$message = $exception->getMessage();
 		
 		$modeDebug = Config::load('beyond.debug');
+		
 		if($modeDebug)
 		{
 			exit(Debug::show($exception));

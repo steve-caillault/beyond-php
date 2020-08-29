@@ -7,7 +7,8 @@
 
 namespace Root\Tasks;
 
-use Root\{ Task, Environment };
+use Root\Task;
+use Root\Environment\Environment;
 
 class MaintenanceTask extends Task {
 	
@@ -25,14 +26,10 @@ class MaintenanceTask extends Task {
 	 */
 	protected function _validationParametersRules() : array
 	{
-		$allowedValues = explode(',', strtolower(implode(',', [
-			0, 1,
-		])));
-		
 		return [
 			[
 				array('required'),
-				array('in_array', [ 'array' => $allowedValues, ]),
+				array('in_array', [ 'array' => array('0', '1'), ]),
 			],
 		];
 	}
@@ -44,7 +41,7 @@ class MaintenanceTask extends Task {
 	protected function _execute() : void
 	{
 		$maintenance = (getArray($this->parameters(), 0) == 1);
-		$success = Environment::maintenance($maintenance);
+		$success = Environment::instance()->maintenance($maintenance);
 		
 		if($success)
 		{

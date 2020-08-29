@@ -65,7 +65,7 @@ function exception(string $message, int $code = 500) : void
  */
 function environment() : string
 {
-	return \Root\Environment::getName();
+	return \Root\Environment\Environment::instance()->getName();
 }
 
 /**

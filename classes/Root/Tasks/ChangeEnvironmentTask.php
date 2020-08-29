@@ -7,7 +7,8 @@
 
 namespace Root\Tasks;
 
-use Root\{ Task, Environment };
+use Root\Task;
+use Root\Environment\Environment;
 
 class ChangeEnvironmentTask extends Task {
 	
@@ -44,7 +45,7 @@ class ChangeEnvironmentTask extends Task {
 	protected function _execute() : void
 	{
 		$environment = getArray($this->parameters(), 0);
-		$success = Environment::change(strtoupper($environment));
+		$success = Environment::instance()->change(strtoupper($environment));
 		$this->_response = ($success) ? 'L\'environnement a été modifié.' : 'L\'environnement n\'a pas été modifié.';
 	}
 	

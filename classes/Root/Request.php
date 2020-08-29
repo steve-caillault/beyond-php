@@ -139,6 +139,15 @@ class Request extends Instanciable {
 	}
 	
 	/**
+	 * Retourne si le protocol est sécurisé
+	 * @return bool
+	 */
+	public function isSecure() : bool
+	{
+		return ($this->protocol() == self::PROTOCOL_HTTPS); 
+	}
+	
+	/**
 	 * Retourne l'URI courante
 	 * @return string
 	 */
