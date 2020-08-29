@@ -148,6 +148,16 @@ final class Environment extends Instanciable {
 		return $this->_file()->changeValue(EnvironmentFile::KEY_NAME, $environment);
 	}
 	
+	/**
+	 * Génére la clé de l'application
+	 * @return bool
+	 */
+	public function generateApplicationKey() : bool
+	{
+		$newKey = Application::instance()->generateKey();
+		return $this->_file()->changeValue(EnvironmentFile::KEY_APPLICATION_KEY, $newKey);
+	}
+	
 	/****************************************************************/
 	
 }
