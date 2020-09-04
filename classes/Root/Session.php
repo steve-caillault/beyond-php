@@ -6,7 +6,15 @@
 
 namespace Root;
 
-class Session extends Instanciable {
+use Root\Cookie\ValidationCookie;
+
+class Session extends ValidationCookie {
+	
+	public const 
+		LIFETIME_SESSION = 0,
+		/***/
+		OPTION_LIFETIME = 'lifetime'
+	; 
 	
 	/**
 	 * Données en session
@@ -14,13 +22,42 @@ class Session extends Instanciable {
 	 */
 	private $_data = [];
 	
+	protected const CONFIGURATION_PATH = 'session';
+	
 	/**************************************************************/
+	/**
+	 * Retourne les règles de validation des options cookies
+	 * @return array
+	 */
+	protected function _validationOptionsCookieRules() : array
+	{
+		return array_merge(parent::_validationOptionsCookieRules(), [
+			self::OPTION_LIFETIME => [
+				array('required'),
+				array('numeric'),
+				array('min', [ 'min' => 0, ]),
+			],
+		]);
+	}
+	
+	/**
+	 * Retourne les options de base
+	 * @return array
+	 */
+	protected function _baseOptionsCookie() : array
+	{
+		return array_merge(parent::_baseOptionsCookie(), [
+			self::OPTION_LIFETIME => self::LIFETIME_SESSION,
+		]);
+	}
 	
 	/**
 	 * Constructeur
 	 */
 	protected function __construct()
 	{
+		session_name($this->_cryptCookieName('session'));
+		session_set_cookie_params($this->_defaultOptionsCookie());
 		session_start();
 		$this->_data = $_SESSION;
 	}
