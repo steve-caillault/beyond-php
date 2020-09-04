@@ -78,6 +78,15 @@ function session() : \Root\Session
 }
 
 /**
+ * Retourne le gestionnaire de cookies
+ * @return \Root\Cookie\Cookie
+ */
+function cookie() : \Root\Cookie\Cookie
+{
+	return \Root\Cookie\Cookie::instance();
+}
+
+/**
  * Retourne le gestionnaire de cache dont le nom est en paramètre
  * @param string $name Nom dans la configuration
  * @return \Root\Cache\BaseCache

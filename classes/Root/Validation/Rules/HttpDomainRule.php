@@ -1,18 +1,18 @@
 <?php
 
 /**
- * Vérification qu'une valeur est présente et non vide
+ * Vérification qu'une valeur représente un domaine HTTP
  */
 
 namespace Root\Validation\Rules;
 
-class RequiredRule extends Rule {
+class HttpDomainRule extends Rule {
 	
 	/**
 	 * Message en cas d'erreur
 	 * @var string
 	 */
-	protected string $_error_message = 'La valeur ne doit pas être vide.';
+	protected string $_error_message = 'La valeur doit être un domaine HTTP.';
 	
 	/********************************************************************************/
 	
@@ -25,7 +25,15 @@ class RequiredRule extends Rule {
 	public function check() : bool
 	{
 		$value = $this->_getValue();
-		return ($value === FALSE OR $value === 0 OR $value != NULL);
+		
+		if($value == 'localhost')
+		{
+			return TRUE;
+		}
+		
+		$pattern = '/^[^\.]+(\.[^\.]+)*\.[a-zA-Z]{2,10}$/D';
+		
+		return (preg_match($pattern, $value) === 1);
 	}
 	
 	/********************************************************************************/
