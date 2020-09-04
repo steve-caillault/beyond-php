@@ -1,15 +1,15 @@
-<?php
+<?php defined('INITIALIZED') OR die('Vous n\'êtes pas autorisé à accéder à ce fichier.');
 
 /**
  * Configuration du cache
  */
 
 use Root\Cache;
-use Root\Cache\FileCache;
 
 return [
 	Cache::CONFIG_DEFAULT => [
-		'type' => FileCache::TYPE,
+		'type' => \Root\Cache\FileCache::TYPE,
+		'prefix_key' => 'beyond-php-',
 	],
 	/*Cache::CONFIG_DEFAULT => [
 		'type' => \Root\Cache\MemcacheCache::TYPE,
@@ -17,6 +17,10 @@ return [
 			'host' => 'localhost',
 			'port' => 11211,
 		],
+		'prefix_key' => 'beyond-php-',
+	],*/
+	/*Cache::CONFIG_DEFAULT => [
+		'type' => \Root\Cache\ApcuCache::TYPE,
 		'prefix_key' => 'beyond-php-',
 	],*/
 ];

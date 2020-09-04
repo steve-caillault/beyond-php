@@ -18,12 +18,6 @@ class MemcacheCache extends BaseCache {
 	 */
 	private Memcache $_memcache;
 	
-	/**
-	 * Prefixe des clés
-	 * @var string
-	 */
-	private string $_prefix_key;
-	
 	/****************************************************/
 	
 	/**
@@ -46,8 +40,6 @@ class MemcacheCache extends BaseCache {
 			exception('Port inconnu.');
 		}
 		
-		$this->_prefix_key = getArray($configuration, 'prefix_key', '');
-		
 		// Tentative de connexion
 		$memcache = new Memcache;
 		$connected = @ $memcache->connect($host, $port);
@@ -57,19 +49,11 @@ class MemcacheCache extends BaseCache {
 		}
 		
 		$this->_memcache = $memcache;
+		
+		parent::__construct($configuration);
 	}
 	
 	/****************************************************/
-	
-	/**
-	 * Retourne la clé dans Memcache
-	 * @param string $key
-	 * @return string
-	 */
-	private function _getkey(string $key) : string
-	{
-		return ($this->_prefix_key . $key);
-	}
 	
 	/**
 	 * Retourne les données du cache dont la clé est en paramètre
@@ -116,7 +100,10 @@ class MemcacheCache extends BaseCache {
 	{
 		$deleted = $this->_memcache->delete($this->_getKey($key));
 		
-		unset($this->_data[$key]);
+		if($deleted)
+		{
+			unset($this->_data[$key]);
+		}
 		
 		return $deleted;
 	}

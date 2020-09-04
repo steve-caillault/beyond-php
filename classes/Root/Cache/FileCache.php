@@ -19,8 +19,9 @@ class FileCache extends BaseCache {
 	 * @param string $key
 	 * @return string
 	 */
-	private static function _filePath(string $key) : string
+	private function _filePath(string $key) : string
 	{
+		$key = $this->_getKey($key);
 		return (self::DIRECTORY . hash('sha256', $key));
 	}
 	

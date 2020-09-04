@@ -16,7 +16,34 @@ abstract class BaseCache extends BaseManager {
 	 */
 	protected array $_data = [];
 	
+	/**
+	 * Prefixe des clés
+	 * @var string
+	 */
+	private string $_prefix_key;
+	
 	/**********************************************************/
+	
+	/**
+	 * Constructeur
+	 * @param array $configuration
+	 */
+	protected function __construct(array $configuration)
+	{
+		$this->_prefix_key = getArray($configuration, 'prefix_key', '');
+	}
+	
+	/**********************************************************/
+	
+	/**
+	 * Retourne la clé dans Memcache
+	 * @param string $key
+	 * @return string
+	 */
+	protected function _getKey(string $key) : string
+	{
+		return ($this->_prefix_key . $key);
+	}
 	
 	/**
 	 * Retourne les données du cache dont la clé est en paramètre

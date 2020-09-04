@@ -1,4 +1,4 @@
-<?php
+<?php defined('INITIALIZED') OR die('Vous n\'êtes pas autorisé à accéder à ce fichier.');
 
 /**
  * Configuration des logs
