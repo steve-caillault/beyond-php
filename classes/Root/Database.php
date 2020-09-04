@@ -11,11 +11,6 @@ use Root\Database\PDO;
 abstract class Database {
 	
 	/**
-	 * Configuration de la base de données par défaut
-	 */
-	public const INSTANCE_DEFAULT = 'DEFAULT';
-	
-	/**
 	 * API PDO
 	 */
 	public const API_PDO = 'PDO';
@@ -54,10 +49,10 @@ abstract class Database {
 	 * @param string $key Clé de la configuration de la base de donnée
 	 * @return Database
 	 */
-	private static function factory(string $key = self::INSTANCE_DEFAULT) : self
+	private static function factory(string $key = Config::DEFAULT) : self
 	{
 		// Chargement de la configuration
-		$configurationKey = 'database.' . strtolower($key);
+		$configurationKey = 'database.' . $key;
 		$configuration = getConfig($configurationKey);
 		if(! $configuration)
 		{
@@ -81,7 +76,7 @@ abstract class Database {
 	 * @param string $key Clé de la configuration de la base de données
 	 * @return Database
 	 */
-	public static function instance(string $key = self::INSTANCE_DEFAULT) : self
+	public static function instance(string $key = Config::DEFAULT) : self
 	{
 		$instance = getArray(self::$_instances, $key);
 		if(! $instance)

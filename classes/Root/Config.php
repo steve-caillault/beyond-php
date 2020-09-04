@@ -4,6 +4,8 @@ namespace Root;
 
 class Config
 {
+	public const DEFAULT = 'default';
+	
 	private const HEADER = "<?php defined('INITIALIZED') OR die('Vous n\'êtes pas autorisé à accéder à ce fichier.');";
 	
 	/**

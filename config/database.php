@@ -4,15 +4,13 @@
  * Configuration de base de la base de données
  */
 
-use Root\Database;
-
 return [
-	'default'	=> [
+	Root\Config::DEFAULT	=> [
 		'connection'	=> [
 			'dns'			=> NULL,
 			'username'		=> NULL,
 			'password'		=> NULL,
 		],
-		'api'	=> Database::API_PDO,	
+		'api'	=> Root\Database::API_PDO,	
 	],
 ];

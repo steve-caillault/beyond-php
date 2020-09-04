@@ -4,11 +4,8 @@
  * Configuration des logs
  */
 
-use Root\Log;
-use Root\Log\FileLog;
-
 return [
-	Log::CONFIG_DEFAULT => [
-		'type' => FileLog::TYPE,
+	Root\Config::DEFAULT => [
+		'type' => Root\Log\FileLog::TYPE,
 	],
 ];

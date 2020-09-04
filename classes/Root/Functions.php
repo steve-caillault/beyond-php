@@ -42,7 +42,7 @@ function debug($variable, bool $exit = FALSE) : string
 function logMessage(
 	string $message, 
 	string $level = \Root\Log\BaseLog::LEVEL_DEBUG, 
-	string $name = \Root\Log::CONFIG_DEFAULT
+	string $name = \Root\Config::DEFAULT
 ) : void
 {
 	\Root\Log::instance($name)->add($message, $level);
@@ -91,7 +91,7 @@ function cookie() : \Root\Cookie\Cookie
  * @param string $name Nom dans la configuration
  * @return \Root\Cache\BaseCache
  */
-function cache(string $name = \Root\Cache::CONFIG_DEFAULT) : \Root\Cache\BaseCache
+function cache(string $name = \Root\Config::DEFAULT) : \Root\Cache\BaseCache
 {
 	return \Root\Cache::instance($name);
 }

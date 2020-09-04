@@ -7,7 +7,7 @@
 
 namespace Root\Database\Query;
 
-use Root\Database;
+use Root\{ Config, Database };
 use Root\Database\Query\Builder\Select as BuilderSelect;
 
 abstract class Builder
@@ -699,7 +699,7 @@ abstract class Builder
 	 * @param string $name Nom de la base de données sur laquelle appliquer la requête
 	 * @return mixed
 	 */
-	public function execute(string $name = Database::INSTANCE_DEFAULT)
+	public function execute(string $name = Config::DEFAULT)
 	{
 		$response = Database::instance($name)->execute($this);
 		static::$_queries[] = Database::lastQuery();

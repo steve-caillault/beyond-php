@@ -4,10 +4,10 @@
  * Configuration des sessions
  */
 
-use Root\Session;
+use Root\{ Config, Session };
 
 return [
-	Session::CONFIG_DEFAULT => [
+	Config::DEFAULT => [
 		Session::OPTION_LIFETIME => Session::LIFETIME_SESSION,
 		Session::OPTION_PATH => Session::PATH_ROOT,
 		Session::OPTION_DOMAIN => Session::DOMAIN_CURRENT,

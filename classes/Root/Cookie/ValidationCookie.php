@@ -6,14 +6,12 @@
 
 namespace Root\Cookie;
 
-use Root\{ URL, Request, Validation };
+use Root\{ URL, Request, Validation, Config };
 use Root\{ Instanciable, Application };
 
 abstract class ValidationCookie extends Instanciable {
 	
 	public const 
-		CONFIG_DEFAULT = 'default',
-		/***/
 		OPTION_PATH = 'path',
 		OPTION_DOMAIN = 'domain',
 		OPTION_SECURE = 'secure',
@@ -59,7 +57,7 @@ abstract class ValidationCookie extends Instanciable {
 	 * Retourne la configuration par défaut validée
 	 * @return array
 	 */
-	protected function _defaultOptionsCookie(string $name = self::CONFIG_DEFAULT) : array
+	protected function _defaultOptionsCookie(string $name = Config::DEFAULT) : array
 	{
 		if($this->_default_options === NULL)
 		{

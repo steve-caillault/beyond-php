@@ -4,10 +4,8 @@
  * Configuration de Beyond PHP
  */
 
-use Root\Core;
-
 return [
-	'locale' => Core::LOCALE_FR_FR,
+	'locale' => Root\Core::LOCALE_FR_FR,
 	'encoding' => 'UTF-8',
 	'debug' => FALSE, // Mode de déboggage 
 ];

@@ -5,7 +5,7 @@
  */
 
 return [
-	'default'	=> [
+	Root\Config::DEFAULT	=> [
 		'connection'	=> [
 			'dns'			=> '@complete',
 			'username'		=> '@complete',

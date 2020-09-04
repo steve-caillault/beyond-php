@@ -7,7 +7,7 @@
 use Root\Cookie\Cookie;
 
 return [
-	Cookie::CONFIG_DEFAULT => [
+	Root\Config::DEFAULT => [
 		Cookie::OPTION_PATH => Cookie::PATH_ROOT,
 		Cookie::OPTION_DOMAIN => Cookie::DOMAIN_CURRENT,
 		Cookie::OPTION_SECURE => Cookie::SECURE_FROM_REQUEST,

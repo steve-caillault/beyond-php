@@ -10,11 +10,7 @@ use Root\Manager\BaseManager;
 
 class Manager {
 	
-	public const
-		MANAGER_TYPE = '',
-		/***/
-		CONFIG_DEFAULT = 'default'
-	;
+	public const MANAGER_TYPE = '';
 		
 	/**
 	 * Instances de manager
@@ -29,7 +25,7 @@ class Manager {
 	 * @param string $name
 	 * @return BaseManager
 	 */
-	public static function instance(string $name = self::CONFIG_DEFAULT) : BaseManager
+	public static function instance(string $name = Config::DEFAULT) : BaseManager
 	{
 		$managerType = static::MANAGER_TYPE;
 		
