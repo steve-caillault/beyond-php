@@ -8,7 +8,7 @@ namespace Root\Cookie;
 
 use Root\Application;
 
-final class Cookie extends ValidationCookie {
+final class Cookie extends DataInCookie {
 	
 	public const
 		OPTION_EXPIRES = 'expires',
@@ -72,8 +72,44 @@ final class Cookie extends ValidationCookie {
 	/**********************************************************************/
 	
 	/**
+	 * Récupére la valeur d'une donnée
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function get(string $key, $default = NULL)
+	{
+		$keySaved = $this->_cryptCookieName($key);
+		
+		$value = $default;
+		if(array_key_exists($key, $this->_data))
+		{
+			$value = $this->_data[$key];
+		}
+		elseif(array_key_exists($keySaved, $_COOKIE))
+		{
+			$valueSavedCrypted = $_COOKIE[$keySaved];
+			$valueSavedDecrypted = base64_decode($valueSavedCrypted);
+			
+			$applicationKey = Application::instance()->getKey();
+			$applicationKeyPosition = strpos($valueSavedDecrypted, $applicationKey);
+			$valuePosition = ($applicationKeyPosition !== FALSE) ? ($applicationKeyPosition + strlen($applicationKey)) : NULL;
+			
+			if($valuePosition !== NULL)
+			{
+				$value = substr($valueSavedDecrypted, $valuePosition);
+				$this->_data[$key] = $value;
+			}
+		}
+		
+		return $value;
+	}
+	
+	/**********************************************************************/
+	
+	/**
 	 * Création d'un cookie
-	 * @param string $name
+	 * @param string $key
 	 * @param string $value
 	 * @param array $options : array(
 	 * 		'expireIn' => <int>, // Durée de vie du Cookie
@@ -84,8 +120,13 @@ final class Cookie extends ValidationCookie {
 	 * )
 	 * @return bool
 	 */
-	public function make(string $name, string $value, array $options = []) : bool
+	public function set(string $key, $value, array $options = []) : bool
 	{
+		if(! is_string($value))
+		{
+			exception('La valeur du cookie doit être une chaine de caractère.');
+		}
+		
 		$cookieOptions = array_merge($this->_defaultOptionsCookie(), $options);
 		$this->_formatOptionsCookie($cookieOptions);
 		$this->_validOptionsCookie($cookieOptions);
@@ -98,14 +139,14 @@ final class Cookie extends ValidationCookie {
 			return (in_array($optionKey, self::OPTIONS));
 		}, ARRAY_FILTER_USE_KEY);
 		
-		$nameToSaved = $this->_cryptCookieName($name);
+		$keyToSaved = $this->_cryptCookieName($key);
 		$valueToSaved = $this->_cryptValue($value);
 		
-		$success = setcookie($nameToSaved, $valueToSaved, $cookieOptions);
+		$success = setcookie($keyToSaved, $valueToSaved, $cookieOptions);
 		
 		if($success)
 		{
-			$this->_data[$name] = $value;
+			$this->_data[$key] = $value;
 		}
 		
 		return $success;
@@ -114,17 +155,17 @@ final class Cookie extends ValidationCookie {
 	/**********************************************************************/
 	
 	/**
-	 * Supprime un cookie
-	 * @param string $name
+	 * Supprime la valeur de la clé en paramètre
+	 * @param string $key
 	 * @return bool
 	 */
-	public function delete(string $name) : bool
+	public function delete(string $key) : bool
 	{
-		$existing = ($this->get($name) !== NULL);
+		$existing = ($this->get($key) !== NULL);
 		
 		if($existing)
 		{
-			$success = $this->make($name, '', [
+			$success = $this->set($key, '', [
 				'expireIn' => -3600,
 			]);
 		}
@@ -135,47 +176,11 @@ final class Cookie extends ValidationCookie {
 		
 		if($success)
 		{
-			$nameSaved = $this->_cryptCookieName($name);
-			unset($this->_data[$name], $_COOKIE[$nameSaved]);
+			$keySaved = $this->_cryptCookieName($key);
+			unset($this->_data[$key], $_COOKIE[$keySaved]);
 		}
 		
 		return $success;
-	}
-	
-	/**********************************************************************/
-	
-	/**
-	 * Récupére la valeur d'un cookie
-	 * @param string $name
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function get(string $name, $default = NULL)
-	{
-		$nameSaved = $this->_cryptCookieName($name);
-		
-		$value = $default;
-		if(array_key_exists($name, $this->_data))
-		{
-			$value = $this->_data[$name];
-		}
-		elseif(array_key_exists($nameSaved, $_COOKIE))
-		{
-			$valueSavedCrypted = $_COOKIE[$nameSaved];
-			$valueSavedDecrypted = base64_decode($valueSavedCrypted);
-			
-			$applicationKey = Application::instance()->getKey();
-			$applicationKeyPosition = strpos($valueSavedDecrypted, $applicationKey);
-			$valuePosition = ($applicationKeyPosition !== FALSE) ? ($applicationKeyPosition + strlen($applicationKey)) : NULL;
-		
-			if($valuePosition !== NULL)
-			{
-				$value = substr($valueSavedDecrypted, $valuePosition);
-				$this->_data[$name] = $value;
-			}
-		}
-		
-		return $value;
 	}
 	
 	/**********************************************************************/

@@ -6,9 +6,9 @@
 
 namespace Root;
 
-use Root\Cookie\ValidationCookie;
+use Root\Cookie\DataInCookie;
 
-class Session extends ValidationCookie {
+class Session extends DataInCookie {
 	
 	public const 
 		LIFETIME_SESSION = 0,
@@ -25,6 +25,20 @@ class Session extends ValidationCookie {
 	protected const CONFIGURATION_PATH = 'session';
 	
 	/**************************************************************/
+	
+	/**
+	 * Constructeur
+	 */
+	protected function __construct()
+	{
+		session_name($this->_cryptCookieName('session'));
+		session_set_cookie_params($this->_defaultOptionsCookie());
+		session_start();
+		$this->_data = $_SESSION;
+	}
+	
+	/**************************************************************/
+	
 	/**
 	 * Retourne les règles de validation des options cookies
 	 * @return array
@@ -51,51 +65,42 @@ class Session extends ValidationCookie {
 		]);
 	}
 	
-	/**
-	 * Constructeur
-	 */
-	protected function __construct()
-	{
-		session_name($this->_cryptCookieName('session'));
-		session_set_cookie_params($this->_defaultOptionsCookie());
-		session_start();
-		$this->_data = $_SESSION;
-	}
-	
 	/**************************************************************/
-	
+
 	/**
-	 * Retourne la valeur de la clé en session
+	 * Récupére la valeur d'une donnée
 	 * @param string $key
-	 * @param mixed $default Valeur à retourner si la clé n'a pas été trouvé
+	 * @param mixed $default
 	 * @return mixed
 	 */
-	public function retrieve(string $key, $default = NULL)
+	public function get(string $key, $default = NULL)
 	{
 		return getArray($this->_data, $key, $default);
 	}
 	
 	/**
-	 * Modfifit la valeur de la clé en session
+	 * Enregistre une valeur
 	 * @param string $key
-	 * @param mixed $value Valeur à affecter
-	 * @return void
+	 * @param mixed $value
+	 * @param array $options
+	 * @return bool
 	 */
-	public function change(string $key, $value) : void
+	public function set(string $key, $value, array $options = []) : bool
 	{
 		$_SESSION[$key] = $value;
 		$this->_data[$key] = $value;
+		return TRUE;
 	}
 	
 	/**
-	 * Supprime la valeur de la clé en paramètre
+	 * Supprime une donnée
 	 * @param string $key
-	 * @return void
+	 * @return bool
 	 */
-	public function delete(string $key) : void
+	public function delete(string $key) : bool
 	{
 		unset($_SESSION[$key], $this->_data[$key]);
-		
+		return TRUE;
 	}
 	
 	/**************************************************************/

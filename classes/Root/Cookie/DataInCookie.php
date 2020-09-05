@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Gestion d'objet utilisant une validation des cookies
+ * Gestion d'objet sauvegardant des données en cookie
  */
 
 namespace Root\Cookie;
@@ -9,7 +9,7 @@ namespace Root\Cookie;
 use Root\{ URL, Request, Validation, Config };
 use Root\{ Instanciable, Application };
 
-abstract class ValidationCookie extends Instanciable {
+abstract class DataInCookie extends Instanciable {
 	
 	public const 
 		OPTION_PATH = 'path',
@@ -164,6 +164,37 @@ abstract class ValidationCookie extends Instanciable {
 		return hash_hmac('sha256', $name, Application::instance()->getKey());
 	}
 	
+	/*****************************************************************/
+
+	/**
+	 * Récupére la valeur d'une donnée
+	 * @param string $key
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	abstract public function get(string $key, $default = NULL);
+
+	/**
+	 * Enregistre une valeur
+	 * @param string $key
+	 * @param mixed $value
+	 * @param array $options : array(
+	 * 		'path' => <string>, // Chemin où le cookie est accessible
+	 * 		'domain' => <string>, // Domaine pour lequel le cookie est accessible
+	 * 		'secure' => <bool>, // Cookie transmit en HTTPS seulement
+	 * 		'httponly' => <bool>, // Accessible en HTTP seulement
+	 * )
+	 * @return bool
+	 */
+	abstract public function set(string $key, $value, array $options = []) : bool;
+
+	/**
+	 * Supprime une donnée
+	 * @param string $key
+	 * @return bool
+	 */
+	abstract public function delete(string $key) : bool;
+
 	/*****************************************************************/
 	
 }
