@@ -6,7 +6,7 @@
 
 namespace Root\Cookie;
 
-use Root\{ URL, Request, Validation, Config };
+use Root\{ Arr, URL, Request, Validation, Config };
 use Root\{ Instanciable, Application };
 
 abstract class DataInCookie extends Instanciable {
@@ -80,22 +80,22 @@ abstract class DataInCookie extends Instanciable {
 	 */
 	protected function _formatOptionsCookie(array &$options) : void
 	{
-		$path = getArray($options, self::OPTION_PATH);
+		$path = Arr::get($options, self::OPTION_PATH);
 		if($path === self::PATH_ROOT)
 		{
 			$options[self::OPTION_PATH] = URL::root();
 		}
 		
-		$secure = getArray($options, self::OPTION_SECURE, FALSE);
+		$secure = Arr::get($options, self::OPTION_SECURE, FALSE);
 		if($secure === self::SECURE_FROM_REQUEST)
 		{
 			$options[self::OPTION_SECURE] = Request::current()->isSecure();
 		}
 		
-		$domain = getArray($options, self::OPTION_DOMAIN);
+		$domain = Arr::get($options, self::OPTION_DOMAIN);
 		if($domain === self::DOMAIN_CURRENT)
 		{
-			$options[self::OPTION_DOMAIN] = getArray($_SERVER, 'SERVER_NAME', '');
+			$options[self::OPTION_DOMAIN] = Arr::get($_SERVER, 'SERVER_NAME', '');
 		}
 	}
 	

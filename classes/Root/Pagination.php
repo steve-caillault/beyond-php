@@ -65,7 +65,7 @@ class Pagination extends Instanciable {
 		foreach($keys as $key)
 		{
 			$property = '_' . $key;
-			$this->{ $property } = getArray($params, $key, $this->{ $property });
+			$this->{ $property } = Arr::get($params, $key, $this->{ $property });
 		}
 		
 		// Nombre de page
@@ -102,11 +102,11 @@ class Pagination extends Instanciable {
 			
 			if($method == self::METHOD_QUERY)
 			{
-				$this->_current_page = getArray($request->query(), $param, 1);
+				$this->_current_page = Arr::get($request->query(), $param, 1);
 			}
 			else
 			{
-				$this->_current_page = getArray($request->parameters(), $param, 1);
+				$this->_current_page = Arr::get($request->parameters(), $param, 1);
 			}
 			
 		}

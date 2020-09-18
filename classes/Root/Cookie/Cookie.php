@@ -6,7 +6,7 @@
 
 namespace Root\Cookie;
 
-use Root\Application;
+use Root\{ Application, Arr };
 
 final class Cookie extends DataInCookie {
 	
@@ -131,7 +131,7 @@ final class Cookie extends DataInCookie {
 		$this->_formatOptionsCookie($cookieOptions);
 		$this->_validOptionsCookie($cookieOptions);
 		
-		$expireIn = getArray($cookieOptions, 'expireIn');
+		$expireIn = Arr::get($cookieOptions, 'expireIn');
 		unset($cookieOptions['expireIn']);
 		$cookieOptions[self::OPTION_EXPIRES] = time() + (int) $expireIn;
 		

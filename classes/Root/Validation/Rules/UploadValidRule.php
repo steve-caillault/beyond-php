@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Arr;
+
 class UploadValidRule extends Rule {
 	
 	/**
@@ -25,7 +27,7 @@ class UploadValidRule extends Rule {
 	public function check() : bool
 	{
 		$errorsAllowed = [ UPLOAD_ERR_OK, UPLOAD_ERR_NO_FILE, ];
-		$error = getArray($this->_getValue(), 'error');
+		$error = Arr::get($this->_getValue(), 'error');
 		
 		return (in_array($error, $errorsAllowed));
 	}

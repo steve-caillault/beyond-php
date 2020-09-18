@@ -68,7 +68,7 @@ class View {
 	 */
 	public function getVar(string $key, $default = NULL)
 	{
-		return getArray($this->_data, $key, $default);
+		return Arr::get($this->_data, $key, $default);
 	}
 	
 	/********************************************************************************/

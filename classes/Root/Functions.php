@@ -118,19 +118,6 @@ function setLanguage(string $locale) : void
 }
 
 /**
- * Retourne la valeur d'une clé dans un tableau.
- * On retourne la valeur par défaut en paramètre si la clé n'est pas présente
- * @param array $array Le tableau visé
- * @param mixed $key La clé visée
- * @param mixed $default La valeur par défault retournée si le clé n'est pas présente dans le tableau
- * @return mixed
- */
-function getArray(?array $array, $key, $default = NULL)
-{
-	return \Root\Arr::get($array, $key, $default);
-}
-
-/**
  * Retourne l'URL du chemin que l'on donne en paramètre
  * @param string $uri
  * @param bool $absolute Vrai si on retourne l'URL absolut
@@ -150,7 +137,7 @@ function getURL(string $uri, bool $absolute = FALSE) : string
 function translate(string $string, array $options = [], ?string $locale = NULL) : string 
 {
 	$translations = \Root\Core::translations($locale);
-	$dataTranslate = getArray($translations, $string, $string);
+	$dataTranslate = \Root\Arr::get($translations, $string, $string);
 	if(is_string($dataTranslate))
 	{
 		return $dataTranslate;
@@ -158,12 +145,12 @@ function translate(string $string, array $options = [], ?string $locale = NULL) 
 	// Gestion des options
 	else
 	{
-		$count = getArray($options, 'count');
-		$gender = getArray($options, 'gender');
+		$count = \Root\Arr($options, 'count');
+		$gender = \Root\Arr($options, 'gender');
 		
 		if($gender !== NULL)
 		{
-			$dataTranslate = getArray($dataTranslate, $gender, $string);
+			$dataTranslate = \Root\Arr($dataTranslate, $gender, $string);
 			if(is_string($dataTranslate))
 			{
 				return $dataTranslate;
@@ -173,11 +160,11 @@ function translate(string $string, array $options = [], ?string $locale = NULL) 
 		{
 			if($count > 1)
 			{
-				return getArray($dataTranslate, 'several', $string);
+				return \Root\Arr($dataTranslate, 'several', $string);
 			}
 			else
 			{
-				return getArray($dataTranslate, 'zero', $string);
+				return \Root\Arr($dataTranslate, 'zero', $string);
 			}
 		}
 		return $string;

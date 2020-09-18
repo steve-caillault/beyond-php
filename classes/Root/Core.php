@@ -48,7 +48,7 @@ final class Core
 		
 		// Rapport d'erreurs
 		$errorsLevel = E_ALL;
-		$modeDebug = getArray($config, 'debug', FALSE);
+		$modeDebug = Arr::get($config, 'debug', FALSE);
 		if(! $modeDebug)
 		{
 			$errorsLevel = E_ALL & ~E_WARNING & ~E_NOTICE;
@@ -56,7 +56,7 @@ final class Core
 		error_reporting($errorsLevel);
 		
 		// Modification de la langue
-		$language = getArray($config, 'locale', self::$_locale);
+		$language = Arr::get($config, 'locale', self::$_locale);
 		setLanguage($language);
 		
 		// Chargement des routes

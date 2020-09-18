@@ -94,7 +94,7 @@ class Config
 		unset($keys[0]);
 		while($key = current($keys))
 		{
-			$data = getArray($data, $key, $defaultValue);
+			$data = Arr::get($data, $key, $defaultValue);
 			next($keys);
 		}
 	

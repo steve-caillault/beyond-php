@@ -36,7 +36,7 @@ class HTML {
      */
     public static function tag(string $tag, array $attributes = []) : string
     {
-    	$content = getArray($attributes, 'content');
+    	$content = Arr::get($attributes, 'content');
     	unset($attributes['content']);
     	
     	return strtr('<:tag :attributes>:content</:tag>', [

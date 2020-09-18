@@ -75,7 +75,7 @@ abstract class Image {
 			exception('Type de fichier non autorisé.');
 		}
 		
-		$class = __NAMESPACE__ . '\Image\Image' . strtoupper(getArray(self::ALLOWED_TYPES, $type));
+		$class = __NAMESPACE__ . '\Image\Image' . strtoupper(Arr::get(self::ALLOWED_TYPES, $type));
 		return new $class($filepath);
 	}
 	
@@ -97,8 +97,8 @@ abstract class Image {
 	public function resize(?int $width, ?int $height) : void
 	{
 		$originalDimensions = $this->getDimensions();
-		$originalWidth = getArray($originalDimensions, 'width');
-		$originalHeight = getArray($originalDimensions, 'height');
+		$originalWidth = Arr::get($originalDimensions, 'width');
+		$originalHeight = Arr::get($originalDimensions, 'height');
 		
 		// Modifit les dimensions pour respecter les proportions
 		
@@ -149,8 +149,8 @@ abstract class Image {
 	 */
 	 public function getDimensions() : array
 	 {
-	 	$width = getArray($this->_dimensions, 'width');
-	 	$height = getArray($this->_dimensions, 'height');
+	 	$width = Arr::get($this->_dimensions, 'width');
+	 	$height = Arr::get($this->_dimensions, 'height');
 	 	
 	 	if($width === NULL OR $height === NULL)
 	 	{

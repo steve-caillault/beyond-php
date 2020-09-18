@@ -64,14 +64,14 @@ class FileUpload extends Instanciable {
 	public function valid() : bool
 	{
 		// Vérifit que le fichier à pu être téléchargé
-		$error = getArray($this->_file_data, 'error', UPLOAD_ERR_NO_FILE);
+		$error = Arr::get($this->_file_data, 'error', UPLOAD_ERR_NO_FILE);
 		if($error != UPLOAD_ERR_OK)
 		{
 			return FALSE;
 		}
 		
 		// Vérifit que le fichier temporaire existe
-		$tmpPath = getArray($this->_file_data, 'tmp_name');
+		$tmpPath = Arr::get($this->_file_data, 'tmp_name');
 		if(! is_file($tmpPath))
 		{
 			return FALSE;
@@ -81,8 +81,8 @@ class FileUpload extends Instanciable {
 		if($this->_is_image)
 		{
 			$originalSizes = getimagesize($tmpPath);
-			$originalWidth = getArray($originalSizes, 0, 0);
-			$originalHeight = getArray($originalSizes, 1, 0);
+			$originalWidth = Arr::get($originalSizes, 0, 0);
+			$originalHeight = Arr::get($originalSizes, 1, 0);
 			if($originalWidth == 0 OR $originalHeight == 0)
 			{
 				return FALSE;
@@ -103,7 +103,7 @@ class FileUpload extends Instanciable {
 			return NULL;
 		}
 		
-		return getArray($this->_file_data, 'tmp_name');
+		return Arr::get($this->_file_data, 'tmp_name');
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class FileUpload extends Instanciable {
 	{
 		if($this->_content === NULL)
 		{
-			$path = getArray($this->_file_data, 'tmp_name');
+			$path = Arr::get($this->_file_data, 'tmp_name');
 			$content = file_get_contents($path);
 			$this->_content = $content;
 		}
@@ -134,7 +134,7 @@ class FileUpload extends Instanciable {
 		}
 		
 		// Déplace le fichier temporaire dans le répertoire demandé
-		$tmpPath = getArray($this->_file_data, 'tmp_name');
+		$tmpPath = Arr::get($this->_file_data, 'tmp_name');
 		return move_uploaded_file($tmpPath, $filepath);
 	}
 	

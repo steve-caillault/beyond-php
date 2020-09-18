@@ -43,7 +43,7 @@ class Manager {
 		{
 			
 			$config = getConfig($managerType . '.' . $name, []);
-			$type = getArray($config, 'type');
+			$type = Arr::get($config, 'type');
 			
 			if($type === NULL)
 			{

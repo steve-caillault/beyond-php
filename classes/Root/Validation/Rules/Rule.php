@@ -6,7 +6,7 @@
 
 namespace Root\Validation\Rules;
 
-use Root\Instanciable;
+use Root\{ Instanciable, Arr };
 
 abstract class Rule extends Instanciable {
 	
@@ -41,8 +41,8 @@ abstract class Rule extends Instanciable {
 	 */
 	protected function __construct(array $parameters = [])
 	{
-		$this->_value = getArray($parameters, 'value', $this->_value);
-		$this->_parameters = getArray($parameters, 'parameters', $this->_parameters);
+		$this->_value = Arr::get($parameters, 'value', $this->_value);
+		$this->_parameters = Arr::get($parameters, 'parameters', $this->_parameters);
 	}
 	
 	/********************************************************************************/
@@ -112,7 +112,7 @@ abstract class Rule extends Instanciable {
 	 */
 	protected function _getParameter(string $key, $defaultValue = NULL)
 	{
-		return getArray($this->_parameters, $key, $defaultValue);
+		return Arr::get($this->_parameters, $key, $defaultValue);
 	}
 	
 	/********************************************************************************/

@@ -6,6 +6,8 @@
 
 namespace Root\Cache;
 
+use Root\Arr;
+
 class FileCache extends BaseCache {
 	
 	public const TYPE = 'file';
@@ -50,7 +52,7 @@ class FileCache extends BaseCache {
 					try {
 						$fileData = unserialize($fileContent);
 						
-						$expireAt = getArray($fileData, 'expireAt', time() - 10);
+						$expireAt = Arr::get($fileData, 'expireAt', time() - 10);
 						
 			
 						// Les données de cache ont expirés
@@ -60,7 +62,7 @@ class FileCache extends BaseCache {
 						}
 						else
 						{
-							$data = getArray($fileData, 'data', $default);
+							$data = Arr::get($fileData, 'data', $default);
 						}
 					} catch(\Exception $exception) {
 						
@@ -72,7 +74,7 @@ class FileCache extends BaseCache {
 			$this->_data[$key] = $data;
 		}
 		
-		return getArray($this->_data, $key);
+		return Arr::get($this->_data, $key);
 	}
 	
 	/****************************************************/

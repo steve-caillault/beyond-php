@@ -6,7 +6,7 @@
 
 namespace Root\Environment;
 
-use Root\{ Instanciable, Application };
+use Root\{ Instanciable, Application, Arr };
 
 final class EnvironmentFile extends Instanciable {
 	
@@ -62,9 +62,9 @@ final class EnvironmentFile extends Instanciable {
 			return FALSE;
 		}
 		
-		$environment = getArray($data, self::KEY_NAME);
-		$maintenance = (int) getArray($data, self::KEY_MAINTENANCE);
-		$applicationKey = getArray($data, self::KEY_APPLICATION_KEY);
+		$environment = Arr::get($data, self::KEY_NAME);
+		$maintenance = (int) Arr::get($data, self::KEY_MAINTENANCE);
+		$applicationKey = Arr::get($data, self::KEY_APPLICATION_KEY);
 		
 		fwrite($file, self::KEY_NAME . '=' . $environment . PHP_EOL);
 		fwrite($file, self::KEY_MAINTENANCE . '=' . $maintenance . PHP_EOL);
@@ -85,7 +85,7 @@ final class EnvironmentFile extends Instanciable {
 	public function changeValue(string $key, string $value) : bool
 	{
 		// Vérifie que la valeur à changer est différente de la valeur courante
-		$currentValue = getArray($this->_data(), $key);
+		$currentValue = Arr::get($this->_data(), $key);
 		if($currentValue == $value)
 		{
 			return TRUE;
@@ -160,7 +160,7 @@ final class EnvironmentFile extends Instanciable {
 	 */
 	public function getValue(string $key, ?string $default = NULL) : ?string
 	{
-		return getArray($this->_data(), $key, $default);
+		return Arr::get($this->_data(), $key, $default);
 	}
 	
 	/*****************************************************/

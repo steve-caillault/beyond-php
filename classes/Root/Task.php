@@ -152,7 +152,7 @@ abstract class Task extends Instanciable {
 		{
 			// Récupération de l'identifiant en paramètre de ligne de commande
 			$arguments = self::_arguments();
-			$expectedIdentifier = getArray($arguments, 'identifier');
+			$expectedIdentifier = Arr::get($arguments, 'identifier');
 			if($expectedIdentifier === NULL)
 			{
 				return NULL;
@@ -175,7 +175,7 @@ abstract class Task extends Instanciable {
 						continue;
 					}
 					
-					$parameters = getArray($arguments, 'parameters', []);
+					$parameters = Arr::get($arguments, 'parameters', []);
 					$task = new $class;
 					$task->_parameters($parameters);
 					self::$_current = $task; 
@@ -251,7 +251,7 @@ abstract class Task extends Instanciable {
 			global $argv;
 			
 			$arguments = $argv;
-			$identifier = getArray($arguments, 1);
+			$identifier = Arr::get($arguments, 1);
 			unset($arguments[0], $arguments[1]);
 			
 			$parameters = [];

@@ -58,10 +58,10 @@ class Validation extends Instanciable {
 	 */
 	protected function __construct(array $params = [])
 	{
-		$this->_data = getArray($params, 'data', $this->_data);
-		$this->_group_rules = getArray($params, 'rules', $this->_group_rules);
+		$this->_data = Arr::get($params, 'data', $this->_data);
+		$this->_group_rules = Arr::get($params, 'rules', $this->_group_rules);
 		
-		$this->_errors_filepath = getArray($params, 'file_errors', $this->_errors_filepath);
+		$this->_errors_filepath = Arr::get($params, 'file_errors', $this->_errors_filepath);
 	}
 
 	/********************************************************************************/
@@ -76,12 +76,12 @@ class Validation extends Instanciable {
 		
 		foreach($this->_group_rules as $field => $rules)
 		{
-			$fieldValue = getArray($this->_data, $field);
+			$fieldValue = Arr::get($this->_data, $field);
 			$required = FALSE;
 			
 			foreach($rules as $ruleData)
 			{
-				$ruleName = getArray($ruleData, 0);
+				$ruleName = Arr::get($ruleData, 0);
 				
 				if($ruleName == 'required')
 				{
@@ -93,7 +93,7 @@ class Validation extends Instanciable {
 					continue;
 				}
 				
-				$ruleParams = getArray($ruleData, 1, []);
+				$ruleParams = Arr::get($ruleData, 1, []);
 				
 				$classFound = FALSE;
 				$classRule = NULL;
@@ -144,7 +144,7 @@ class Validation extends Instanciable {
 	 */
 	public function addError(string $field, string $ruleName, string $message) : void
 	{
-		if(! getArray($this->_errors, $field))
+		if(! Arr::get($this->_errors, $field))
 		{
 			$this->_errors[$field] = [];
 		}
@@ -163,8 +163,8 @@ class Validation extends Instanciable {
 	private function _errorFromFile(string $field, string $rule) : ?string
 	{
 		$errors = $this->_errorsFromFile();
-		$fieldErrors = getArray($errors, $field, []);
-		$ruleError = getArray($fieldErrors, $rule);
+		$fieldErrors = Arr::get($errors, $field, []);
+		$ruleError = Arr::get($fieldErrors, $rule);
 		return $ruleError;
 	}
 	
@@ -180,7 +180,7 @@ class Validation extends Instanciable {
 			
 			if($this->_errors_filepath !== NULL)
 			{
-				$errorsLoaded = getArray(self::$_errors_files_loaded, $this->_errors_filepath);
+				$errorsLoaded = Arr::get(self::$_errors_files_loaded, $this->_errors_filepath);
 				$filepath = '.' . DIRECTORY_SEPARATOR . self::ERROR_FILE_DIRECTORY . $this->_errors_filepath . '.php';
 				if(is_array($errorsLoaded))
 				{

@@ -7,7 +7,7 @@
 
 namespace Root\Database\Query;
 
-use Root\{ Config, Database };
+use Root\{ Config, Database, Arr };
 use Root\Database\Query\Builder\Select as BuilderSelect;
 
 abstract class Builder
@@ -546,13 +546,13 @@ abstract class Builder
 	public function addCriteria(array $params) : self
 	{
 		// Si on fait la jointure avec une table
-		$joinTable = getArray($params, 'table_to_join');
-		$joinType = getArray($params, 'join_type', self::JOIN);
+		$joinTable = Arr::get($params, 'table_to_join');
+		$joinType = Arr::get($params, 'join_type', self::JOIN);
 		
-		$left = getArray($params, 'left');
-		$operator = getArray($params, 'operator', self::WHERE_EQUALS);
-		$right = getArray($params, 'right');
-		$whereType = getArray($params, 'where_type', self::CLAUSE_AND);
+		$left = Arr::get($params, 'left');
+		$operator = Arr::get($params, 'operator', self::WHERE_EQUALS);
+		$right = Arr::get($params, 'right');
+		$whereType = Arr::get($params, 'where_type', self::CLAUSE_AND);
 		
 		// Si on ne fait pas de jointure, on ajoute une clause WHERE
 		if($joinTable === NULL)

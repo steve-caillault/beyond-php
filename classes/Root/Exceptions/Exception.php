@@ -6,7 +6,7 @@
 
 namespace Root\Exceptions;
 
-use Root\Validation;
+use Root\{ Validation, Arr };
 use Root\Environment\Environment;
 
 final class Exception {
@@ -67,16 +67,16 @@ final class Exception {
 		$configuration = getConfig(self::CONFIG_KEY, []);
 		self::_validConfiguration($configuration);
 		
-		$logName = getArray($configuration, 'name');
+		$logName = Arr::get($configuration, 'name');
 		
 		// L'enregistrement n'est pas autorisé
-		$enabled = (bool) getArray($configuration, 'enabled', FALSE);
+		$enabled = (bool) Arr::get($configuration, 'enabled', FALSE);
 		if(! $enabled)
 		{
 			return;
 		}
 		
-		$formatterClass = getArray($configuration, 'formatter_class');
+		$formatterClass = Arr::get($configuration, 'formatter_class');
 		$message = (new $formatterClass($exception))->formattedMessage();
 		
 		logMessage($message, \Root\Log\BaseLog::LEVEL_ERROR, $logName);

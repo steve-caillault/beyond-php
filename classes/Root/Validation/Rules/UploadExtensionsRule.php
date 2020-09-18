@@ -6,7 +6,7 @@
 
 namespace Root\Validation\Rules;
 
-use Root\File;
+use Root\{ File, Arr };
 
 class UploadExtensionsRule extends Rule {
 	
@@ -27,14 +27,14 @@ class UploadExtensionsRule extends Rule {
 	public function check() : bool
 	{
 		// Pas de vérification si le fichier n'a pas été téléchargé
-		$error = getArray($this->_getValue(), 'error');
+		$error = Arr::get($this->_getValue(), 'error');
 		if($error != UPLOAD_ERR_OK)
 		{
 			return TRUE;
 		}
 		
 		$extensions = $this->_getParameter('types', []);
-		$filename = getArray($this->_getValue(), 'name');
+		$filename = Arr::get($this->_getValue(), 'name');
 		$extension = File::extension($filename);
 		return (in_array($extension, $extensions));
 	}

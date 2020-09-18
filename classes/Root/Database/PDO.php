@@ -9,7 +9,7 @@ namespace Root\Database;
 
 use PDO as ConnectionPDO;
 /***/
-use Root\Database;
+use Root\{ Database, Arr };
 use Root\Database\Query\Builder as QueryBuilder;
 
 class PDO extends Database {
@@ -30,9 +30,9 @@ class PDO extends Database {
 	 */
 	protected function __construct(array $configuration)
 	{
-		$dns = getArray($configuration, 'dns');
-		$username = getArray($configuration, 'username');
-		$password = getArray($configuration, 'password');
+		$dns = Arr::get($configuration, 'dns');
+		$username = Arr::get($configuration, 'username');
+		$password = Arr::get($configuration, 'password');
 		$this->_connection = new ConnectionPDO($dns, $username, $password);
 	}
 	
@@ -64,10 +64,10 @@ class PDO extends Database {
 		$matches = [];
 		preg_match_all('/^SQL|Sent SQL/', $debugQuery, $matches, PREG_OFFSET_CAPTURE);
 		
-		foreach(getArray($matches, 0, []) as $match)
+		foreach(Arr::get($matches, 0, []) as $match)
 		{
-			$indexMatch = getArray($match, 1, 0);
-			$stringMatch = getArray($match, 0);
+			$indexMatch = Arr::get($match, 1, 0);
+			$stringMatch = Arr::get($match, 0);
 			$subQuery = substr($debugQuery, $indexMatch + strlen($stringMatch));
 			$subQuery = substr($subQuery, strpos($subQuery, ']') + 1);
 			static::$_last_query = trim(substr($subQuery, 0, strpos($subQuery, "\n" /*PHP_EOL*/)));
@@ -79,7 +79,7 @@ class PDO extends Database {
 		if(! $response)
 		{
 			$errorMessage ='Une erreur s\'est produite lors de l\'exécution de la requête.';
-			if($errorInfo = $query->errorInfo() AND $reason = getArray($errorInfo, 2))
+			if($errorInfo = $query->errorInfo() AND $reason = Arr::get($errorInfo, 2))
 			{
 				$errorMessage .= ' '. $reason;
 			}

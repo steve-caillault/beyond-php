@@ -7,6 +7,7 @@
 namespace Root\Cache;
 
 use Memcache;
+use Root\Arr;
 
 class MemcacheCache extends BaseCache {
 	
@@ -26,11 +27,11 @@ class MemcacheCache extends BaseCache {
 	 */
 	protected function __construct(array $configuration)
 	{
-		$connection = getArray($configuration, 'connection');
+		$connection = Arr::get($configuration, 'connection');
 		
 		// Récupération des paramètres de connexion
-		$host = getArray($connection, 'host');
-		$port = getArray($connection, 'port');
+		$host = Arr::get($connection, 'host');
+		$port = Arr::get($connection, 'port');
 		if($host === NULL)
 		{
 			exception('Hôte inconnu.');

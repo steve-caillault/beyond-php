@@ -59,8 +59,8 @@ abstract class Database {
 			exception('Configuration de la base de données manquante.');
 		}
 		
-		$connection = getArray($configuration, 'connection');
-		$api = getArray($configuration, 'api', self::API_PDO);
+		$connection = Arr::get($configuration, 'connection');
+		$api = Arr::get($configuration, 'api', self::API_PDO);
 	
 		switch($api)
 		{
@@ -78,7 +78,7 @@ abstract class Database {
 	 */
 	public static function instance(string $key = Config::DEFAULT) : self
 	{
-		$instance = getArray(self::$_instances, $key);
+		$instance = Arr::get(self::$_instances, $key);
 		if(! $instance)
 		{
 			$instance = self::factory($key);

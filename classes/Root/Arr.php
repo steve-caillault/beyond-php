@@ -1,10 +1,10 @@
 <?php
 
-namespace Root;
-
 /**
  * Méthodes utilitaires sur les tableaux
  */
+
+namespace Root;
 
 class Arr
 {

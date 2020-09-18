@@ -67,7 +67,7 @@ class Request extends Instanciable {
 	 */
 	protected function __construct(array $params = [])
 	{
-		$this->_route = getArray($params, 'route', Route::current());
+		$this->_route = Arr::get($params, 'route', Route::current());
 		if(! $this->_route)
 		{
 			exception('Page introuvable.', 404);
@@ -107,9 +107,9 @@ class Request extends Instanciable {
 		{
 			$allowedProtocols = [ self::PROTOCOL_HTTP, self::PROTOCOL_HTTPS, ];
 			$protocol = self::PROTOCOL_HTTP;
-			$scheme = getArray($_SERVER, 'REQUEST_SCHEME');
-			$formardedProtocol = getArray($_SERVER, 'HTTP_X_FORWARDED_PROTO');
-			$withSSL = (getArray($_SERVER, 'HTTPS') === 'on');
+			$scheme = Arr::get($_SERVER, 'REQUEST_SCHEME');
+			$formardedProtocol = Arr::get($_SERVER, 'HTTP_X_FORWARDED_PROTO');
+			$withSSL = (Arr::get($_SERVER, 'HTTPS') === 'on');
 			
 			if($withSSL)
 			{
@@ -182,7 +182,7 @@ class Request extends Instanciable {
 		{
 			$params = [];
 			
-			$queryString = getArray($_SERVER, 'QUERY_STRING', NULL);
+			$queryString = Arr::get($_SERVER, 'QUERY_STRING', NULL);
 			$querySegments = ($queryString == '') ? [] : explode('&', $queryString);
 			
 			foreach($querySegments as $segment)
@@ -237,7 +237,7 @@ class Request extends Instanciable {
 	 */
 	public function inputs() : array
 	{
-		$method = getArray($_SERVER, 'REQUEST_METHOD', self::METHOD_GET);
+		$method = Arr::get($_SERVER, 'REQUEST_METHOD', self::METHOD_GET);
 		
 		$data = ($method == self::METHOD_GET) ? $this->query() : $this->post();
 		
@@ -267,7 +267,7 @@ class Request extends Instanciable {
 	 */
 	public function parameter(string $key, $default = NULL)
 	{
-		return getArray($this->parameters(), $key, $default);
+		return Arr::get($this->parameters(), $key, $default);
 	}
 	
 	/**
@@ -285,7 +285,7 @@ class Request extends Instanciable {
 	 */
 	public function isAjax() : bool
 	{
-		return (strtolower(getArray($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL)) == 'xmlhttprequest');
+		return (strtolower(Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL)) == 'xmlhttprequest');
 	}
 	
 	/**

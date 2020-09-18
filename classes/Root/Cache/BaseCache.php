@@ -30,7 +30,7 @@ abstract class BaseCache extends BaseManager {
 	 */
 	protected function __construct(array $configuration)
 	{
-		$this->_prefix_key = getArray($configuration, 'prefix_key', '');
+		$this->_prefix_key = Arr::get($configuration, 'prefix_key', '');
 	}
 	
 	/**********************************************************/

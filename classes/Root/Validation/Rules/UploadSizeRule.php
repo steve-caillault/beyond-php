@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Arr;
+
 class UploadSizeRule extends Rule {
 	
 	private const 
@@ -30,13 +32,13 @@ class UploadSizeRule extends Rule {
 	public function check() : bool
 	{
 		// Pas de vérification si le fichier n'a pas été téléchargé
-		$error = getArray($this->_getValue(), 'error');
+		$error = Arr::get($this->_getValue(), 'error');
 		if($error != UPLOAD_ERR_OK)
 		{
 			return TRUE;
 		}
 		
-		$size = getArray($this->_getValue(), 'size', 0);
+		$size = Arr::get($this->_getValue(), 'size', 0);
 		$sizeAllowed = $this->_getParameter('size', 1) * self::SIZE_MEGA; 
 		
 		return ($size < $sizeAllowed);
