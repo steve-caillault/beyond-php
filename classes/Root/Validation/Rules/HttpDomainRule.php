@@ -25,15 +25,8 @@ class HttpDomainRule extends Rule {
 	public function check() : bool
 	{
 		$value = $this->_getValue();
-		
-		if($value == 'localhost')
-		{
-			return TRUE;
-		}
-		
-		$pattern = '/^[^\.]+(\.[^\.]+)*\.[a-zA-Z]{2,10}$/D';
-		
-		return (preg_match($pattern, $value) === 1);
+		// $pattern = '/^[^\.]+(\.[^\.]+)*\.[a-zA-Z]{2,10}$/D';
+		return (filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== FALSE);
 	}
 	
 	/********************************************************************************/

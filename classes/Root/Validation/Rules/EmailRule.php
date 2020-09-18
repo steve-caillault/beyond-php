@@ -25,12 +25,10 @@ class EmailRule extends Rule {
 	public function check() : bool
 	{
 		$value = $this->_getValue();
-		
-		$pattern = strtr('/^:sub(\.:sub)*\@:sub+\.[a-zA-Z]{2,10}$/D', [
+		/*$pattern = strtr('/^:sub(\.:sub)*\@:sub+\.[a-zA-Z]{2,10}$/D', [
 			':sub' => '[^\@\.\ ]+'
-		]);
-		
-		return (preg_match($pattern, $value) === 1);
+		]);*/
+		return filter_var($value, FILTER_VALIDATE_EMAIL);
 	}
 	
 	/********************************************************************************/
