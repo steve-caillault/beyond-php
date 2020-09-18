@@ -60,7 +60,7 @@ class Config
 		$keys = explode('.', $key);
 		$file = $keys[0];
 		
-		if(! in_array($file, self::$_loaded))
+		if(! array_key_exists($file, self::$_loaded))
 		{
 			$filename = $file . '.php';
 			$filepaths = [
@@ -86,12 +86,12 @@ class Config
 			{
 				return $defaultValue;
 			}
-			unset($keys[0]);
 			self::$_loaded[$file] = $fileData;
 		}
 		
 		$data = self::$_loaded[$file];
 		
+		unset($keys[0]);
 		while($key = current($keys))
 		{
 			$data = getArray($data, $key, $defaultValue);

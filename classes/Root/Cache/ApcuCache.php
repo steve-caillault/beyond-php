@@ -21,7 +21,7 @@ class ApcuCache extends BaseCache {
 	{
 		if(! function_exists('apcu_enabled') OR ! apcu_enabled())
 		{
-			exception('APCu n\'est pas discponible.');
+			exception('APCu n\'est pas disponible.');
 		}
 		parent::__construct($configuration);
 	}
