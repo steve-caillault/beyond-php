@@ -14,9 +14,8 @@ class CLIException {
 	 * @return void
 	 */
 	public static function handler(\Throwable $exception) : void
-	{
-		$message = $exception->getMessage();
-		exit($message);
+	{	
+		Exception::log($exception);
 		
 		$modeDebug = getConfig('beyond.debug');
 		if($modeDebug)
@@ -24,6 +23,7 @@ class CLIException {
 			debug($exception, TRUE);
 		}
 		
+		$message = $exception->getMessage();
 		debug($message, TRUE);
 	}
 	

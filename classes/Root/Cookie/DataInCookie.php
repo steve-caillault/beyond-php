@@ -140,13 +140,10 @@ abstract class DataInCookie extends Instanciable {
 			'rules' => $this->_validationOptionsCookieRules(),
 		]);
 		
-		// debug($options, TRUE);
-		
 		$validation->validate();
 		
 		if(! $validation->success())
 		{
-			debug($validation->errors(), TRUE);
 			exception('Options des cookies incorrectes.');
 		}
 		

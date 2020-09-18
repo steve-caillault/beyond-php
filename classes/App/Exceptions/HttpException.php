@@ -6,8 +6,8 @@
 
 namespace App\Exceptions;
 
-use Root\{ Config, Request, Debug };
-use Root\Response;
+use Root\{ Request, Response };
+use Root\Exceptions\Exception;
 
 class HttpException {
 	
@@ -21,12 +21,14 @@ class HttpException {
 		$code = $exception->getCode();
 		$message = $exception->getMessage();
 		
-		$modeDebug = Config::load('beyond.debug');
+		Exception::log($exception);
 		
+		$modeDebug = getConfig('beyond.debug');
 		if($modeDebug)
 		{
-			exit(Debug::show($exception));
+			debug($exception, TRUE);
 		}
+		
 		$allowedCodes = [ 401, 403, 404, 500, ];
 		if(! in_array($code, $allowedCodes))
 		{
