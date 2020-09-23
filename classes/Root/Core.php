@@ -53,6 +53,15 @@ final class Core
 		{
 			$errorsLevel = E_ALL & ~E_WARNING & ~E_NOTICE;
 		}
+		else
+		{
+			set_error_handler(function(int $level, string $message, string $file, int $line) {
+				if($level == E_NOTICE)
+				{
+					throw new \ErrorException($message, 0, $level, $file, $line);
+				}
+			});
+		}
 		error_reporting($errorsLevel);
 		
 		// Modification de la langue

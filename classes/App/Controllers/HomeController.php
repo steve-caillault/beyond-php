@@ -6,13 +6,19 @@
 
 namespace App\Controllers;
 
-use Root\{ Controller, Response };
+use Root\Controllers\HTMLController;
 
-class HomeController extends Controller {
+class HomeController extends HTMLController {
+	
+	/**
+	 * Chemin de la vue de base à utiliser
+	 * @var string
+	 */
+	protected string $_template_path = 'testing/view';
 	
 	public function index() : void
 	{
-		$this->_response = new Response('Home');
+		$this->_template->setVar('message', 'Home');
 	}
 	
 }

@@ -3,12 +3,17 @@
 /**
  * Gestion d'une requête HTTP
  */
- 
-namespace Root;
 
-class Request extends Instanciable {
+namespace Root\Request;
 
-	private const 
+use Root\{ Arr, Response, URL };
+use Root\Route\HTTPRoute as Route;
+
+class HTTPRequest extends AbstractRequest {
+	
+	protected const ROUTE_CLASS = Route::class;
+	
+	private const
 		METHOD_GET = 'GET',
 		METHOD_POST = 'POST',
 		/***/
@@ -17,22 +22,10 @@ class Request extends Instanciable {
 	;
 	
 	/**
-	 * Route de la requête
-	 * @var Route
-	 */
-	private ?Route $_route = NULL;
-	
-	/**
 	 * URI de la requête courante
 	 * @var string
 	 */
 	private static ?string $_current_uri = NULL;
-	
-	/**
-	 * Requête courante
-	 * @var Request
-	 */
-	private static ?Request $_current = NULL;
 	
 	/**
 	 * Protocol
@@ -60,42 +53,7 @@ class Request extends Instanciable {
 	
 	/********************************************************************************/
 	
-	/* CONSTRUCTEUR / INSTANCIATION */
-	
-	/**
-	 * Constructeur
-	 */
-	protected function __construct(array $params = [])
-	{
-		$this->_route = Arr::get($params, 'route', Route::current());
-		if(! $this->_route)
-		{
-			exception('Page introuvable.', 404);
-		}
-	}
-	
-	/********************************************************************************/
-
 	/* GET */
-	
-	/**
-	 * Retourne / affecte la requête courante
-	 * @param self $request Si renseigné, la requête a affecter
-	 * @return self
-	 */
-	public static function current(?self $request = NULL) : self
-	{
-		if($request !== NULL)
-		{
-			self::$_current = $request;
-		}
-		elseif(self::$_current === NULL)
-		{
-			$request = new static;
-			self::$_current = $request;
-		}
-		return self::$_current;
-	}
 	
 	/**
 	 * Retourne le protocol des réquêtes
@@ -144,7 +102,7 @@ class Request extends Instanciable {
 	 */
 	public function isSecure() : bool
 	{
-		return ($this->protocol() == self::PROTOCOL_HTTPS); 
+		return ($this->protocol() == self::PROTOCOL_HTTPS);
 	}
 	
 	/**
@@ -251,35 +209,6 @@ class Request extends Instanciable {
 	}
 	
 	/**
-	 * Retourne les paramètres de la route
-	 * @return array
-	 */
-	public function parameters() : array
-	{
-		return $this->_route->parameters();
-	}
-	
-	/**
-	 * Retourne le paramètre de la route dont la clé est en paramètre
-	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function parameter(string $key, $default = NULL)
-	{
-		return Arr::get($this->parameters(), $key, $default);
-	}
-	
-	/**
-	 * Retourne la route de la requête
-	 * @return Route
-	 */
-	public function route() : Route
-	{
-		return $this->_route;
-	}
-	
-	/**
 	 * Retourne si la requête a été appelé en Ajax
 	 * @return bool
 	 */
@@ -288,20 +217,11 @@ class Request extends Instanciable {
 		return (strtolower(Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL)) == 'xmlhttprequest');
 	}
 	
-	/**
-	 * Retourne si la requête est appelé en ligne de commande
-	 * @return bool
-	 */
-	public static function isCLI() : bool
-	{
-		return (strtolower(php_sapi_name()) == 'cli');
-	}
-	
 	/********************************************************************************/
 	
 	/**
 	 * Réponse de la requête
-	 * @return string
+	 * @return Response
 	 */
 	public function response() : ?Response
 	{
@@ -310,17 +230,17 @@ class Request extends Instanciable {
 		
 		$controllerClass = 'App\\Controllers\\' . $controllerName;
 		
-		// Vérifit si le contrôleur existe
+		// Vérifie si le contrôleur existe
 		if(! class_exists($controllerClass))
 		{
 			exception(strtr('Le contrôleur :name n\'existe pas', [
-				':name' => $controllerClass,	
+				':name' => $controllerClass,
 			]));
 		}
 		
 		$controller = new $controllerClass;
 		
-		// Vérifit si la méthode du contrôleur exsite
+		// Vérifie si la méthode du contrôleur existe
 		if(! method_exists($controller, $method))
 		{
 			exception(strtr('La méthode :method n\'existe pas pour le contrôleur :controller.', [
@@ -328,14 +248,13 @@ class Request extends Instanciable {
 				':controller'	=> $controllerClass,
 			]));
 		}
-
 		
-		$controller->method($method);
+		
 		$controller->request($this);
 		
 		$controller->before();
 		$controller->execute();
-		$controller->after(); 
+		$controller->after();
 		
 		// Exécute la méthode du contrôleur
 		$response = $controller->response();
@@ -347,5 +266,5 @@ class Request extends Instanciable {
 	}
 	
 	/********************************************************************************/
-	
+		
 }

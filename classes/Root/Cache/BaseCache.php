@@ -6,6 +6,7 @@
 
 namespace Root\Cache;
 
+use Root\Arr;
 use Root\Manager\BaseManager;
 
 abstract class BaseCache extends BaseManager {

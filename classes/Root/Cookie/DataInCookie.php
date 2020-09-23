@@ -6,8 +6,8 @@
 
 namespace Root\Cookie;
 
-use Root\{ Arr, URL, Request, Validation, Config };
-use Root\{ Instanciable, Application };
+use Root\{ Arr, URL, Validation, Config, Instanciable, Application };
+use Root\Request\HTTPRequest as Request;
 
 abstract class DataInCookie extends Instanciable {
 	

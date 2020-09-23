@@ -7,6 +7,9 @@
 
 namespace Root;
 
+use Root\Request\HTTPRequest as Request;
+use Root\Route\HTTPRoute as Route;
+
 class Pagination extends Instanciable {
 	
 	private const 

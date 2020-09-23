@@ -7,7 +7,7 @@
 
 namespace Root\Tasks;
 
-use Root\{ Task, Arr };
+use Root\{ Task, Response };
 use Root\Environment\Environment;
 
 class MaintenanceTask extends Task {
@@ -38,9 +38,10 @@ class MaintenanceTask extends Task {
 	 * Exécute la tâche
 	 * @return void
 	 */
-	protected function _execute() : void
+	public function execute() : void
 	{
-		$maintenance = (Arr::get($this->parameters(), 0) == 1);
+		$maintenance = ($this->request()->parameter(0, 0) == 1);
+		
 		$success = Environment::instance()->maintenance($maintenance);
 		
 		if($success)
@@ -52,7 +53,7 @@ class MaintenanceTask extends Task {
 			$message = ($maintenance) ? 'Le site n\'a pas pu être mis en maintenance.' : 'Le site n\'a pas pu être réactivé.';
 		}
 		
-		$this->_response = $message;
+		$this->_response = new Response($message);
 	}
 	
 	/*******************************************************/

@@ -57,8 +57,15 @@ class FileLog extends BaseLog {
 		
 		$date = $this->_datetime->format('Y-m-d H:i:s');
 		
+		$header = [ $date, strtoupper($level), ];
+		$uri = $this->_uri;
+		if($uri != NULL)
+		{
+			$header[] = $uri;
+		}
+		
 		$texts = [
-			$date . ' - ' . strtoupper($level) . ' - ' . $this->_uri,
+			implode(' - ', $header),
 			$message . PHP_EOL,
 			'-------------------------------' . PHP_EOL,
 		];

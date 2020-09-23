@@ -7,7 +7,7 @@
 
 namespace Root\Tasks;
 
-use Root\{ Task, Arr };
+use Root\{ Task, Response };
 use Root\Environment\Environment;
 
 class ChangeEnvironmentTask extends Task {
@@ -42,11 +42,12 @@ class ChangeEnvironmentTask extends Task {
 	 * Exécute la tâche
 	 * @return void
 	 */
-	protected function _execute() : void
+	public function execute() : void
 	{
-		$environment = Arr::get($this->parameters(), 0);
+		$environment = $this->request()->parameter(0);
 		$success = Environment::instance()->change(strtoupper($environment));
-		$this->_response = ($success) ? 'L\'environnement a été modifié.' : 'L\'environnement n\'a pas été modifié.';
+		$message = ($success) ? 'L\'environnement a été modifié.' : 'L\'environnement n\'a pas été modifié.';
+		$this->_response = new Response($message);
 	}
 	
 	/*******************************************************/

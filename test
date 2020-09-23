@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php 
+
+require('./classes/Root/Core.php');
+
+Root\Core::initialize();
+
+echo Root\Request\TestingRequest::current()->response();

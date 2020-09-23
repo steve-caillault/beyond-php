@@ -31,7 +31,7 @@ abstract class Instanciable
 	 * @param array $params Paramètre de l'objet
 	 * @return self
 	 */
-	public static function _construct($params = NULL) : self
+	protected static function _construct($params = NULL) : self
 	{
 		return new static($params);
 	}

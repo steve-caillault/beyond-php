@@ -7,7 +7,7 @@
 namespace Root\Log;
 
 use DateTime, DateTimeZone;
-use Root\{ Request, Task };
+use Root\Route\AbstractRoute as Route; 
 use Root\Manager\BaseManager;
 
 abstract class BaseLog extends BaseManager {
@@ -44,7 +44,7 @@ abstract class BaseLog extends BaseManager {
 	protected function __construct(array $params)
 	{
 		$this->_datetime = new DateTime('now', new DateTimeZone('UTC'));
-		$this->_uri = (Request::isCLI()) ? Task::current()->identifier() : Request::detectUri();
+		$this->_uri = (Route::currentIdentifier() ?: '');
 	}
 	
 	/************************************************************/

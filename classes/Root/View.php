@@ -6,7 +6,9 @@
 
 namespace Root;
 
-class View {
+use Root\Exceptions\View\NotFoundViewException;
+
+final class View {
 	
 	private const DIRECTORY = 'views/';
 	
@@ -31,31 +33,20 @@ class View {
 	 * @param string $path Chemin de la vue
 	 * @param array $data Données à transmettre à la vue
 	 */
-	private function __construct(string $path, array $data = [])
+	public function __construct(string $path, array $data = [])
 	{
 		$path = self::DIRECTORY . $path . '.php';
 		
 		// Vérifit si le fichier de la vue existe
 		if(! is_file($path))
 		{
-			exception(strtr('La vue :file n\'existe pas.', [
+			throw new NotFoundViewException(strtr('La vue :file n\'existe pas.', [
 				':file' => $path,	
 			]));
 		}
 		
 		$this->_path = $path;
 		$this->_data = $data;
-	}
-	
-	/**
-	 * Instanciation
-	 * @param string $path Chemin de la vue
-	 * @param array $data Données à transmettre à la vue
-	 * @return self
-	 */
-	public static function factory(string $path, array $data = []) : self
-	{
-		return new self($path, $data);
 	}
 	
 	/********************************************************************************/

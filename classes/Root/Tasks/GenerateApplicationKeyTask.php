@@ -7,7 +7,7 @@
 
 namespace Root\Tasks;
 
-use Root\Task;
+use Root\{ Task, Response };
 use Root\Environment\Environment;
 
 class GenerateApplicationKeyTask extends Task {
@@ -24,10 +24,11 @@ class GenerateApplicationKeyTask extends Task {
 	 * Exécute la tâche
 	 * @return void
 	 */
-	protected function _execute() : void
+	public function execute() : void
 	{
 		$success = Environment::instance()->generateApplicationKey();
-		$this->_response = ($success) ? 'La clé de l\'application a été modifié.' : 'La clé de l\'application n\'a pas été modifié.';
+		$message = ($success) ? 'La clé de l\'application a été modifié.' : 'La clé de l\'application n\'a pas été modifié.';
+		$this->_response = new Response($message);
 	}
 	
 	/*******************************************************/

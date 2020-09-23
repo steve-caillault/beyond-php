@@ -6,6 +6,8 @@
  
 namespace Root;
 
+use Root\Request\HTTPRequest as Request;
+
 class URL {
 
 	/**

@@ -4,7 +4,7 @@
  * Définition des routes
  */
 
-use Root\Route;
+use Root\Route\HTTPRoute as Route;
 
 /**
  * Racine

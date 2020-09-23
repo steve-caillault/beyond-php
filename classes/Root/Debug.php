@@ -6,6 +6,8 @@
 
 namespace Root;
 
+use Root\Request\AbstractRequest as Request;
+
 class Debug {
 	
 	/**

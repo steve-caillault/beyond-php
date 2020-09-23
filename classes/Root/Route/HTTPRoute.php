@@ -1,12 +1,15 @@
 <?php
 
 /**
- * Gestion d'une route
+ * Gestion d'une route HTTP
  */
  
-namespace Root;
+namespace Root\Route;
 
-class Route {
+use Root\Arr;
+use Root\Request\HTTPRequest as Request;
+
+class HTTPRoute extends AbstractRoute {
 
 	/**
 	 * Nom, clé unique de la route
@@ -30,13 +33,7 @@ class Route {
 	 * Méthode du contrôleur à appeler
 	 * @var string
 	 */
-	private string $_method ;
-	
-	/**
-	 * Retourne les paramètres de la requête
-	 * @var array
-	 */
-	private array $_parameters = [];
+	private string $_method;
 	
 	/**
 	 * Liste des expressions régulières des paramètres dans la route
@@ -55,18 +52,6 @@ class Route {
 	 * @var array
 	 */
 	private static array $_list = [];
-	
-	/**
-	 * Route de la requête courante
-	 * @var string
-	 */
-	private static ?self $_current;
-	
-	/**
-	 * Vrai si la requête courante a été initialisé
-	 * @var bool
-	 */
-	private static bool $_current_initialialized = FALSE;
 	
 	/********************************************************************************/
 	
@@ -98,37 +83,31 @@ class Route {
 	/********************************************************************************/
 	
 	/**
-	 * Retourne la requête courante
+	 * Recherche la requête courante
 	 * @return self
 	 */
-	public static function current() : ?self
+	protected static function _retrieveCurrent() : ?self
 	{
-		if(! self::$_current_initialialized)
+		$currentUri = Request::detectUri();
+		foreach(self::$_list as $route)
 		{
-			self::$_current = NULL;
-			self::$_current_initialialized = TRUE;
-			$currentUri = Request::detectUri();
-			foreach(self::$_list as $route)
+			$pattern = $route->_patternUri();
+			
+			// La route a été trouvé
+			if(preg_match_all($pattern, $currentUri) == 1)
 			{
-				$pattern = $route->_patternUri();
-				
-				// La route a été trouvé
-				if(preg_match_all($pattern, $currentUri) == 1)
-				{
-					// Récupération des paramètres de l'URI
-					$route->_retrieveUriParams();
-					return (self::$_current = $route);
-				}
+				$route->_retrieveParameters();
+				return $route;
 			}
 		}
-		return self::$_current;
+		return NULL;
 	}
 	
 	/**
-	 * Retourne les paramètres dans l'URI
+	 * Affecte les paramètres de la route
 	 * @retur array
 	 */
-	private function _retrieveUriParams() : array
+	protected function _retrieveParameters() : array
 	{
 		$this->_parameters = $this->_defaults;
 		
@@ -243,6 +222,15 @@ class Route {
 	/* GET */
 	
 	/**
+	 * Retourne l'identifiant de la route, utilisé pour les logs
+	 * @return string
+	 */
+	public function identifier() : string
+	{
+		return $this->_uri;
+	}
+	
+	/**
 	 * Retourne le nom de la route
 	 * @return string
 	 */
@@ -254,7 +242,7 @@ class Route {
 	/**
 	 * Retourne une route dont on donne le nom
 	 * @param string $name Nom de la route
-	 * @return Route
+	 * @return HTTPRoute
 	 */
 	public static function retrieve(string $name) : ?self
 	{
@@ -277,15 +265,6 @@ class Route {
 	public function method() : string
 	{
 		return $this->_method;
-	}
-	
-	/**
-	 * Retourne les paramètres de la route
-	 * @return array
-	 */
-	public function parameters() : array
-	{
-		return $this->_parameters;
 	}
 	
 	/**

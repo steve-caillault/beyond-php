@@ -6,7 +6,8 @@
 
 namespace App\Exceptions;
 
-use Root\{ Request, Response };
+use Root\Response;
+use Root\Request\HTTPRequest as Request;
 use Root\Exceptions\Exception;
 
 class HttpException {
