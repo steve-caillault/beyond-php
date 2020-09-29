@@ -28,9 +28,10 @@ class ClassPHP {
 	/**
 	 * Retourne la valeur d'une propriété
 	 * @param string $propertyName
+	 * @param mixed $object Si renseigné, l'objet dont on souhaite récupérer la propriété
 	 * @return mixed
 	 */
-	public function getPropertyValue(string $propertyName)
+	public function getPropertyValue(string $propertyName, $object = NULL)
 	{
 		$reflectionClass = $this->_reflection_class;
 		
@@ -49,7 +50,10 @@ class ClassPHP {
 		
 		$className = $reflectionClass->getName();
 		
-		$object = (! $property->isStatic()) ? new $className : NULL;
+		if($object === NULL)
+		{
+			$object = (! $property->isStatic()) ? new $className : NULL;
+		}
 		
 		return $property->getValue($object);
 	}

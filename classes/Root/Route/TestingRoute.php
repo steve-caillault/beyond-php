@@ -62,18 +62,24 @@ class TestingRoute extends CommandLine {
 	protected static function _retrieveCurrent() : ?self
 	{
 		global $argv;
-		$parameter = Arr::get($argv, 1);
+		$parameter = strtr((Arr::get($argv, 1)), [
+			'/' => '\\',
+			';' => '::',
+		]);
+		
 		if($parameter === NULL)
 		{
 			exception('Nom du test manquant.', 404);
 		}
 		
+		
 		// Récupération de la méthode du test à appeler
 		$methodPosition = strpos($parameter, '::');
-		$method = ($methodPosition !== FALSE) ? ltrim(substr($parameter, $methodPosition), '::') . 'Test' : NULL;
+		$method = ($methodPosition !== FALSE) ? ltrim(substr($parameter, $methodPosition), '::') : NULL;
 		
 		$expectedName = ($methodPosition !== FALSE) ? substr($parameter, 0, $methodPosition) : $parameter;
 		
+	
 		$files = array_merge(
 			Directory::files('classes/Root/Testing/'),
 			Directory::files('classes/App/Testing/')

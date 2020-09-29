@@ -39,7 +39,9 @@ abstract class Test extends ExecutableRequest {
 		{
 			if(preg_match($pattern, $method->name) === 1)
 			{
+				$this->before();
 				$responseMethod = $this->{ $method->name }();
+				$this->after();
 				if(! $responseMethod)
 				{
 					$success = FALSE;
@@ -67,7 +69,6 @@ abstract class Test extends ExecutableRequest {
 	 */
 	public function response()
 	{
-		$this->execute();
 		$method = $this->request()->route()->method();
 		$this->_addLogResult($method, $this->_success);
 		$response = implode(PHP_EOL, $this->_messages);

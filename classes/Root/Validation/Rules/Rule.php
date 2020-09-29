@@ -6,9 +6,9 @@
 
 namespace Root\Validation\Rules;
 
-use Root\{ Instanciable, Arr };
+use Root\Arr;
 
-abstract class Rule extends Instanciable {
+abstract class Rule {
 	
 	/**
 	 * Valeur à vérifier
@@ -39,7 +39,7 @@ abstract class Rule extends Instanciable {
 	 * 		'parameters'	=> <array>, // Paramètres de la règle
 	 * ]
 	 */
-	protected function __construct(array $parameters = [])
+	public function __construct(array $parameters = [])
 	{
 		$this->_value = Arr::get($parameters, 'value', $this->_value);
 		$this->_parameters = Arr::get($parameters, 'parameters', $this->_parameters);
@@ -82,7 +82,9 @@ abstract class Rule extends Instanciable {
 			}
 		});
 		
-		return strtr($this->_error_message, array_combine($keys, $values));
+		$messageParameters = array_combine($keys, $values);
+		$messageParameters[':value'] = $this->_getValue();
+		return strtr($this->_error_message, $messageParameters);
 	}
 	
 	/**

@@ -46,6 +46,24 @@ abstract class ExecutableRequest {
 	}
 	
 	/**
+	 * Méthode à exécuter avant la méthode principale
+	 * @return void
+	 */
+	public function before() : void
+	{
+		// Rien de particulier
+	}
+	
+	/**
+	 * Méthode à éxécuter après la méthode principale
+	 * @return void
+	 */
+	public function after() : void
+	{
+		// Rien de particulier
+	}
+	
+	/**
 	 * Méthode d'exécution
 	 * @return void
 	 */

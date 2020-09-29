@@ -39,6 +39,11 @@ class TestingRequest extends AbstractRequest {
 		
 		$test = new $testClass;
 		$test->request($this);
+		
+		$test->before();
+		$test->execute();
+		$test->after();
+		
 		return $test->response();
 	}
 	

@@ -135,7 +135,7 @@ abstract class DataInCookie extends Instanciable {
 	 */
 	protected function _validOptionsCookie(array $options) : void
 	{
-		$validation = Validation::factory([
+		$validation = new Validation([
 			'data' => $options,
 			'rules' => $this->_validationOptionsCookieRules(),
 		]);

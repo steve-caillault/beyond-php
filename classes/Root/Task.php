@@ -68,7 +68,7 @@ abstract class Task extends ExecutableRequest {
 	 */
 	protected function _validatationParameters() : void
 	{
-		$validation = Validation::factory([
+		$validation = new Validation([
 			'data' => $this->request()->parameters(),
 			'rules' => $this->_validationParametersRules(),
 		]);

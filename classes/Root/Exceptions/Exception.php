@@ -20,7 +20,7 @@ final class Exception {
 	 */
 	private static function _validConfiguration(array $configuration) : void
 	{
-		$validation = Validation::factory([
+		$validation = new Validation([
 			'data' => $configuration,
 			'rules' => [
 				'enabled' => [

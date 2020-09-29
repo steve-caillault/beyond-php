@@ -6,9 +6,15 @@
 
 namespace Root;
 
-class Validation extends Instanciable {
+use Root\Validation\Rules\Rule;
+
+class Validation {
 	
 	private const ERROR_FILE_DIRECTORY = 'resources/errors/';
+	public const 
+		ERROR_RULE = 'rule',
+		ERROR_MESSAGE = 'message'
+	;
 	
 	/**
 	 * Données d'un tableau à valider
@@ -56,14 +62,55 @@ class Validation extends Instanciable {
 	 * 	'data' 	=> array, // Données du formulaire
 	 *  'rules'	=> array, // Règles de validation
 	 */
-	protected function __construct(array $params = [])
+	public function __construct(array $params = [])
 	{
 		$this->_data = Arr::get($params, 'data', $this->_data);
-		$this->_group_rules = Arr::get($params, 'rules', $this->_group_rules);
+		
+		$rules = Arr::get($params, 'rules', $this->_group_rules);
+		$this->addRules($rules);
 		
 		$this->_errors_filepath = Arr::get($params, 'file_errors', $this->_errors_filepath);
 	}
 
+	/********************************************************************************/
+	
+	/**
+	 * Modifit les règles de validation
+	 * @return self
+	 */
+	 public function setRules(array $rules) : self
+	 {
+		$this->_errors = [];
+		$this->_group_rules = [];
+		$this->addRules($rules);
+		return $this;
+	 }
+	
+	/**
+	 * Modifit les données à valider
+	 * @param array $data Les données à remplacer
+	 * @return self
+	 */
+	public function setData(array $data) : self
+	{
+		$this->_errors = [];
+		$this->_data = $data;
+		return $this;
+	}
+	
+	/**
+	 * Modifit le fichier des erreurs
+	 * @param string $filepath
+	 * @return self
+	 */
+	public function setFileErrors(?string $filepath) : self
+	{
+		$this->_errors = [];
+		$this->_errors_filepath = $filepath;
+		$this->_errors_from_file = NULL;
+		return $this;
+	}
+	
 	/********************************************************************************/
 	
 	/**
@@ -72,53 +119,28 @@ class Validation extends Instanciable {
 	 */
 	public function validate() : void
 	{
-		$namespaces = [ 'App', __NAMESPACE__, ];
-		
 		foreach($this->_group_rules as $field => $rules)
 		{
 			$fieldValue = Arr::get($this->_data, $field);
 			$required = FALSE;
+			$knownValue = $this->_getRule($fieldValue, 'required')->check();
 			
 			foreach($rules as $ruleData)
 			{
 				$ruleName = Arr::get($ruleData, 0);
+				$ruleParams = Arr::get($ruleData, 1, []);
 				
 				if($ruleName == 'required')
 				{
 					$required = TRUE;
 				}
 				
-				if($ruleName != 'required' AND ! $required AND $fieldValue == NULL)
+				if($ruleName != 'required' AND ! $required AND ! $knownValue)
 				{
 					continue;
 				}
 				
-				$ruleParams = Arr::get($ruleData, 1, []);
-				
-				$classFound = FALSE;
-				$classRule = NULL;
-				
-				foreach($namespaces as $namespace)
-				{
-					$classRule = $namespace . '\Validation\Rules\\' . Str::camelCase($ruleName) . 'Rule';
-					if($classFound = class_exists($classRule))
-					{
-						break;
-					}
-				}
-				
-				if(! $classFound)
-				{
-					exception(strtr('La classe :class n\'a pas été trouvé.', [
-						':class' => $classRule,
-					]));
-				}
-				
-				$rule = $classRule::factory([
-					'value' => $fieldValue,
-					'parameters' => $ruleParams,
-				]);
-				
+				$rule = $this->_getRule($fieldValue, $ruleName, $ruleParams);
 				if(! $rule->check())
 				{
 					// Attache l'erreur présente dans le fichier
@@ -135,6 +157,114 @@ class Validation extends Instanciable {
 		}
 	}
 	
+	/********************************************************************************/
+	
+	/* AJOUT DE REGLES */
+	
+	/**
+	 * Ajoute un ensemble de règle pour dffèrent champs
+	 * @param array $rules
+	 * @return self
+	 */
+	public function addRules(array $rules) : self
+	{
+		foreach($rules as $field => $fieldRules)
+		{
+			$this->addFieldRules($field, $fieldRules);
+		}
+		return $this;
+	}
+	
+	/**
+	 * Ajoute plusieurs règles à un champs
+	 * @param string $field
+	 * @param array $rules
+	 * @return self
+	 */
+	public function addFieldRules(string $field, array $rules) : self
+	{
+		$currentRules = $this->_group_rules[$field] ?? [];
+		$currentRules = [ ...$currentRules, ...$rules];
+		
+		// Tri des règles pour que la règle required soit en premier
+		usort($currentRules, function($rule1, $rule2) use($currentRules) {
+			$rule1Type = Arr::get($rule1, 0);
+			$rule2Type = Arr::get($rule2, 0);
+			
+			if($rule1Type == 'required')
+			{
+				return -1;
+			}
+			elseif($rule2Type == 'required')
+			{
+				return 1;
+			}
+			
+			$index1 = array_search($rule1, $currentRules);
+			$index2 = array_search($rule2, $currentRules);
+			
+			return (($index1 > $index2) ? 1 : -1);
+		});
+		
+		$this->_group_rules[$field] = $currentRules;
+		
+		return $this;
+	}
+	
+	/**
+	 * Ajoute une règle à un champs
+	 * @param string $field
+	 * @param string $rule
+	 * @param array $parameters
+	 * @return self
+	 */
+	public function addFieldRule(string $field, string $rule, array $parameters = []) : self
+	{
+		$rules = [
+			array($rule, $parameters),
+		];
+		$this->addFieldRules($field, $rules);
+		return $this;
+	}
+	
+	/**
+	 * Retourne la règle correspondant aux paramètres
+	 * @param mixed $value La valeur à valider
+	 * @param string $ruleName Le nom de la règle
+	 * @param array $parameters Les paramètres de la règle
+	 * @return Rule
+	 */
+	private function _getRule($value, string $ruleName, array $parameters = []) : ?Rule 
+	{
+		$classFound = FALSE;
+		$classRule = NULL;
+		
+		$namespaces = [ 'App', __NAMESPACE__, ];
+		foreach($namespaces as $namespace)
+		{
+			$classRule = $namespace . '\Validation\Rules\\' . Str::camelCase($ruleName) . 'Rule';
+			if($classFound = class_exists($classRule))
+			{
+				break;
+			}
+		}
+		
+		if(! $classFound)
+		{
+			exception(strtr('La classe :class n\'a pas été trouvé.', [
+				':class' => $classRule,
+			]));
+		}
+		
+		
+		return new $classRule([
+			'value' => $value,
+			'parameters' => $parameters,
+		]);
+	}
+	
+	/********************************************************************************/
+	
 	/**
 	 * Ajoute une erreur
 	 * @param string $field Champs pour lequel il y a une erreur
@@ -149,7 +279,10 @@ class Validation extends Instanciable {
 			$this->_errors[$field] = [];
 		}
 		
-		$this->_errors[$field] = $message;
+		$this->_errors[$field] = [
+			self::ERROR_RULE => $ruleName,
+			self::ERROR_MESSAGE => $message,
+		];
 	}
 	
 	/********************************************************************************/
@@ -212,12 +345,35 @@ class Validation extends Instanciable {
 	}
 	
 	/**
-	 * Retourne les erreurs
-	 * @return  array
+	 * Retourne l'erreur d'un champs
+	 * @param string $field Nom du champs
+	 * @param string $errorKey Sous quelle forme retourner les erreurs rule|message 
+	 * @return string
 	 */
-	public function errors() : array
+	public function error(string $field, string $errorKey = self::ERROR_MESSAGE) : ?string
 	{
-		return $this->_errors;
+		$errors = $this->errors($errorKey);
+		return Arr::get($errors, $field);
+	}
+	
+	/**
+	 * Retourne les erreurs
+	 * @param string $errorKey Sous quelle forme retourner les erreurs rule|message 
+	 * @return array
+	 */
+	public function errors(string $errorKey = self::ERROR_MESSAGE) : array
+	{
+		$allowedKeys = [ self::ERROR_RULE, self::ERROR_MESSAGE, ];
+		if(! in_array($errorKey, $allowedKeys))
+		{
+			exception('Clé incorrecte.');
+		}
+		
+		$errors = $this->_errors;
+		array_walk($errors, fn(&$error) => $error = Arr::get($error, $errorKey));
+
+		
+		return $errors;
 	}
 	
 	/********************************************************************************/
