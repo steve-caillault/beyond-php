@@ -6,13 +6,15 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class InArrayRule extends Rule {
 	
 	/**
 	 * Message en cas d'erreur
 	 * @var string
 	 */
-	protected string $_error_message = 'La valeur doit être présent dans le tableau :array.';
+	protected string $_error_message = 'La valeur doit être présente dans le tableau :array.';
 	
 	/********************************************************************************/
 	
@@ -26,10 +28,9 @@ class InArrayRule extends Rule {
 	{
 		$value = $this->_getValue();
 		$allowedValues = $this->_getParameter('array');
-		
 		if(! is_array($allowedValues) OR count($allowedValues) == 0)
 		{
-			exception('Le tableau de valeur est invalide ou vide.');
+			throw new ParameterException('Le tableau de valeur est invalide ou vide.');
 		}
 		
 		return in_array($value, $allowedValues);

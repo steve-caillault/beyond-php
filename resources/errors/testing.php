@@ -13,5 +13,7 @@ return [
 		'email' => 'L\'adresse email n\'est pas valide.',
 		'exact_length' => 'La valeur doit avoir :length caractères.',
 		'http_domain' => 'Le domaine n\'est pas valide.',
+		'in_array' => 'La valeur n\'est pas autorisée.',
+		'max_length' => 'La valeur ne doit pas avoir plus de :max caractères.',
 	],
 ];

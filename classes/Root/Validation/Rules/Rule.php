@@ -72,9 +72,18 @@ abstract class Rule {
 
 		$values = array_values($this->_parameters);
 		array_walk($values, function(&$item, $key) {
-			if(! is_object($item))
+			if(is_array($item))
 			{
-				$item = (is_array($item) ? implode(', ', $item) : $item);
+				try {
+					$item = implode(', ', $item);
+				} catch(\Exception $exception) {
+					$item = json_encode($item);
+				}
+				
+			}
+			if(! is_object($item))
+			{	
+				$item = print_r($item, TRUE);
 			}
 			else
 			{

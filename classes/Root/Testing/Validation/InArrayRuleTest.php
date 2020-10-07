@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Test sur la règle de validation exact_length
+ * Test sur la règle de validation in_array
  */
 
 namespace Root\Testing\Validation;
 
-class ExactLengthRuleTest extends WithParametersRuleTest {
+class InArrayRuleTest extends WithParametersRuleTest {
 	
-	protected const CURRENT_RULE = 'exact_length';
+	protected const CURRENT_RULE = 'in_array';
 	
-	private const LENGTH = 8;
+	private const ARRAY =  [ 1, 2, 3, ];
 	
 	/**
 	 * Règles de validation
@@ -19,105 +19,119 @@ class ExactLengthRuleTest extends WithParametersRuleTest {
 	protected array $_rules = [
 		'value' => [
 			array(self::CURRENT_RULE, [
-				'length' => self::LENGTH,
+				'array' => self::ARRAY,
 			]),
 		],
 	];
 	
 	/*********************************************************/
-
+	
 	/**
-	 * La longueur est inconnue
+	 * Le paramètre array est inconnu
 	 * @return bool
 	 */
-	protected function _unknownLengthTest() : bool
+	protected function _missedArrayParameterTest() : bool
 	{
+		$this->_validation->setData([
+			'value' => 'tomate',
+		]);
 		$this->_validation->setRules([
 			'value' => [
 				array(self::CURRENT_RULE),
-			],
+			], 
 		]);
-		$this->_validation->setData([
-			'value' => 'Paris',
-		]);
-		
 		return $this->_checkIncorrectRuleParameters();
 	}
 	
 	/**
-	 * La longueur n'est pas un entier
+	 * Le paramètre array n'est pas un tableau
 	 * @return bool
 	 */
-	protected function _lengthNotIntegerTest() : bool
+	protected function _notArrayParameterTest() : bool
 	{
+		$this->_validation->setData([
+			'value' => 'pomme de terre',
+		]);
 		$this->_validation->setRules([
 			'value' => [
 				array(self::CURRENT_RULE, [
-					'length' => 'pomme',
+					'array' => new class {},
 				]),
 			],
 		]);
-		$this->_validation->setData([
-			'value' => 'Nantes',
-		]);
-		
 		return $this->_checkIncorrectRuleParameters();
 	}
 	
 	/**
-	 * La longueur n'est pas un entier positif
+	 * Le paramètre array est un tableau vide
 	 * @return bool
 	 */
-	protected function _lengthNotPositiveTest() : bool
+	protected function _emptyArrayParameterTest() : bool
 	{
+		$this->_validation->setData([
+			'value' => 'poivron',
+		]);
 		$this->_validation->setRules([
 			'value' => [
 				array(self::CURRENT_RULE, [
-					'length' => -12,
+					'array' => [],
 				]),
 			],
 		]);
-		$this->_validation->setData([
-			'value' => 'Orléans',
-		]);
-		
 		return $this->_checkIncorrectRuleParameters();
 	}
 	
-	/*********************************************************/
-	
 	/**
-	 * Chaine de caractères trop courte
+	 * Le paramètre array posséde des clés qui sont des objets
 	 * @return bool
 	 */
-	protected function _valueTooShortTest() : bool
+	protected function _arrayParameterWithObjectTest() : bool
 	{
+		$array = [
+			new class {} => [
+				'v1' => 1, 
+				'v2' => -12,
+			],
+			[ 'test' ] => new class {},
+			[
+				'value1' => 10,
+				'value2' => TRUE,
+			],
+			'test-value' => new class {},
+		];
 		$this->_validation->setData([
-			'value' => 'poire',
+			'value' => 'piment',
+		]);
+		$this->_validation->setRules([
+			'value' => [
+				array(self::CURRENT_RULE, [
+					'array' => $array,
+				]),
+			],
 		]);
 		return $this->_valueWithRuleError();
 	}
 	
 	/**
-	 * Chaine de caractères trop longue
+	 * La valeur n'est pas présente dans le tableau
 	 * @return bool
 	 */
-	protected function _valueTooLongTest() : bool
+	protected function _notInArrayTest() : bool
 	{
 		$this->_validation->setData([
-			'value' => 'Pimprenelle',
+			'value' => -1,
 		]);
 		return $this->_valueWithRuleError();
 	}
 	
 	/**
-	 * Chaine de caractères correcte
+	 * La valeur est présente dans le tableau
 	 * @return bool
 	 */
-	protected function _validValueTest() : bool
+	protected function _inArrayTest() : bool
 	{
 		$this->_validation->setData([
-			'value' => 'azertyui',
+			'value' => 2,
 		]);
 		return $this->_isValid();
 	}
@@ -132,8 +146,8 @@ class ExactLengthRuleTest extends WithParametersRuleTest {
 	 */
 	protected function _defaultMessageTest() : bool
 	{
-		$expectedMessage = strtr('La valeur doit avoir exactement :length caractères.', [
-			':length' => self::LENGTH,
+		$expectedMessage = strtr('La valeur doit être présente dans le tableau :array.', [
+			':array' => implode(', ', self::ARRAY),
 		]);
 		$this->_validation->setData([
 			'value' => 'Test',
@@ -149,12 +163,10 @@ class ExactLengthRuleTest extends WithParametersRuleTest {
 	 */
 	protected function _fileMessageTest() : bool
 	{
-		$expectedMessage = strtr('La valeur doit avoir :length caractères.', [
-			':length' => self::LENGTH,
-		]);
+		$expectedMessage = 'La valeur n\'est pas autorisée.';
 		$this->_validation->setFileErrors('testing');
 		$this->_validation->setData([
-			'value' => 'pomme',
+			'value' => FALSE,
 		]);
 		$this->_validation->validate();
 		$error = $this->_validation->error('value');
