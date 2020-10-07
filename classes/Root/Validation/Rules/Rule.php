@@ -83,7 +83,7 @@ abstract class Rule {
 		});
 		
 		$messageParameters = array_combine($keys, $values);
-		$messageParameters[':value'] = $this->_getValue();
+		$messageParameters[':value'] = print_r($this->_getValue(), TRUE);
 		return strtr($this->_error_message, $messageParameters);
 	}
 	

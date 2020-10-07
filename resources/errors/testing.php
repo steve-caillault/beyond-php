@@ -9,5 +9,7 @@ return [
 		'required' => 'La valeur est manquante.',
 		'boolean' => 'La valeur est doit est vrai ou faux.',
 		'class_exists' => 'La classe :value n\'existe pas.',
+		'date' => 'La date doit respecter le format :format.',
+		'email' => 'L\'adresse email n\'est pas valide.',
 	],
 ];
