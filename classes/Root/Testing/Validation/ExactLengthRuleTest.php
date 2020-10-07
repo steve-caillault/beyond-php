@@ -6,6 +6,8 @@
 
 namespace Root\Testing\Validation;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class ExactLengthRuleTest extends ExceptRequiredRuleTest {
 	
 	protected const CURRENT_RULE = 'exact_length';
@@ -25,7 +27,82 @@ class ExactLengthRuleTest extends ExceptRequiredRuleTest {
 	];
 	
 	/*********************************************************/
+	
+	/**
+	 * Test que le paramètre length est incorrect
+	 * @return bool
+	 */
+	private function _checkIncorrectLength() : bool
+	{
+		$success = FALSE;
+		try {
+			$this->_validation->validate();
+		} catch(\Exception $exception) {
+			$success = ($exception instanceof ParameterException);
+		}
+		return $success;
+	}
 
+	/**
+	 * La longueur est inconnue
+	 * @return bool
+	 */
+	protected function _unknownLengthTest() : bool
+	{
+		$this->_validation->setRules([
+			'value' => [
+				array(self::CURRENT_RULE),
+			],
+		]);
+		$this->_validation->setData([
+			'value' => 'Paris',
+		]);
+		
+		return $this->_checkIncorrectLength();
+	}
+	
+	/**
+	 * La longueur n'est pas un entier
+	 * @return bool
+	 */
+	protected function _lengthNotIntegerTest() : bool
+	{
+		$this->_validation->setRules([
+			'value' => [
+				array(self::CURRENT_RULE, [
+					'length' => 'pomme',
+				]),
+			],
+		]);
+		$this->_validation->setData([
+			'value' => 'Nantes',
+		]);
+		
+		return $this->_checkIncorrectLength();
+	}
+	
+	/**
+	 * La longueur n'est pas un entier positif
+	 * @return bool
+	 */
+	protected function _lengthNotPositiveTest() : bool
+	{
+		$this->_validation->setRules([
+			'value' => [
+				array(self::CURRENT_RULE, [
+					'length' => -12,
+				]),
+			],
+		]);
+		$this->_validation->setData([
+			'value' => 'Orléans',
+		]);
+		
+		return $this->_checkIncorrectLength();
+	}
+	
+	/*********************************************************/
+	
 	/**
 	 * Chaine de caractères trop courte
 	 * @return bool

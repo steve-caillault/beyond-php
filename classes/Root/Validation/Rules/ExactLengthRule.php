@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class ExactLengthRule extends Rule {
 	
 	/**
@@ -30,7 +32,7 @@ class ExactLengthRule extends Rule {
 		
 		if(! is_numeric($expected) OR $expected < 1)
 		{
-			exception('Le longueur doit être un entier positif.');
+			throw new ParameterException('La longueur doit être un entier positif.');
 		}
 		
 		return (is_string($value) AND $length == ((int) $expected));

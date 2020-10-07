@@ -6,14 +6,8 @@
 
 namespace Root\Exceptions\View;
 
-use Exception;
+use Root\Exceptions\AbstractException;
 
-class NotFoundViewException extends Exception {
-	
-	/**
-	 * Code
-	 * @var integer
-	 */
-	protected $code = 500;
+class NotFoundViewException extends AbstractException {
 	
 }
