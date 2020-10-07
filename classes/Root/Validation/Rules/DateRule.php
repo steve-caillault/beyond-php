@@ -28,7 +28,6 @@ class DateRule extends Rule {
 	{
 		$value = $this->_getValue();
 		$dateFormat = $this->_getParameter('format');
-		
 		if($dateFormat !== NULL)
 		{
 			$this->_error_message = 'La valeur doit respecter le format :format.';
