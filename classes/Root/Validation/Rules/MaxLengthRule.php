@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class MaxLengthRule extends Rule {
 	
 	/**
@@ -25,15 +27,21 @@ class MaxLengthRule extends Rule {
 	public function check() : bool
 	{
 		$value = $this->_getValue();
-		$length = mb_strlen($value);
 		$maximum = $this->_getParameter('max');
 		
 		if(! is_numeric($maximum) OR $maximum < 1)
 		{
-			exception('Le maximum doit être un entier positif.');
+			throw new ParameterException('Le maximum doit être un entier positif.');
 		}
 		
-		return (is_string($value) AND $length <= ((int) $maximum));
+		if(! is_string($value))
+		{
+			$this->_error_message = 'La valeur doit être une chaine de caractères.';
+			return FALSE;
+		}
+		
+		$length = mb_strlen($value);
+		return ($length <= ((int) $maximum));
 	}
 	
 	/********************************************************************************/
