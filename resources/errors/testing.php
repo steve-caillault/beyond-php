@@ -11,5 +11,7 @@ return [
 		'class_exists' => 'La classe :value n\'existe pas.',
 		'date' => 'La date doit respecter le format :format.',
 		'email' => 'L\'adresse email n\'est pas valide.',
+		'exact_length' => 'La valeur doit avoir :length caractères.',
+		'http_domain' => 'Le domaine n\'est pas valide.',
 	],
 ];
