@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class MinLengthRule extends Rule {
 	
 	/**
@@ -25,15 +27,21 @@ class MinLengthRule extends Rule {
 	public function check() : bool
 	{
 		$value = $this->_getValue();
-		$length = mb_strlen($value);
 		$minimum = $this->_getParameter('min');
 	
 		if(! is_numeric($minimum) OR $minimum < 1)
 		{
-			exception('Le minimum doit être un entier positif.');
+			throw new ParameterException('Le minimum doit être un entier positif.');
+		}
+		
+		if(! is_string($value))
+		{
+			$this->_error_message = 'La valeur doit être une chaine de caractères.';
+			return FALSE;
 		}
 
-		return (is_string($value) AND $length >= ((int) $minimum));
+		$length = mb_strlen($value);
+		return ($length >= ((int) $minimum));
 	}
 	
 	/********************************************************************************/
