@@ -6,6 +6,8 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class MinRule extends Rule {
 	
 	/**
@@ -29,10 +31,16 @@ class MinRule extends Rule {
 		
 		if(! is_numeric($minimum))
 		{
-			exception('Le minimum doit être une valeur numérique.');
+			throw new ParameterException('Le minimum doit être une valeur numérique.');
 		}
 		
-		return ($value >= ((int) $minimum));
+		if(! is_numeric($value))
+		{
+			$this->_error_message = 'La valeur doit être une valeur numérique.';
+			return FALSE;
+		}
+		
+		return ($value >= $minimum);
 	}
 	
 	/********************************************************************************/
