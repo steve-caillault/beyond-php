@@ -15,5 +15,6 @@ return [
 		'http_domain' => 'Le domaine n\'est pas valide.',
 		'in_array' => 'La valeur n\'est pas autorisée.',
 		'max_length' => 'La valeur ne doit pas avoir plus de :max caractères.',
+		'max' => 'La valeur ne doit pas être supérieure à :max.',
 	],
 ];

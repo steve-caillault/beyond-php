@@ -6,13 +6,15 @@
 
 namespace Root\Validation\Rules;
 
+use Root\Exceptions\Validation\Rules\ParameterException;
+
 class MaxRule extends Rule {
 	
 	/**
 	 * Message en cas d'erreur
 	 * @var string
 	 */
-	protected string $_error_message = 'La valeur doit être inférieur ou égale à :max.';
+	protected string $_error_message = 'La valeur doit être inférieure ou égale à :max.';
 	
 	/********************************************************************************/
 	
@@ -29,10 +31,16 @@ class MaxRule extends Rule {
 		
 		if(! is_numeric($maximum))
 		{
-			exception('Le maximum doit être une valeur numérique.');
+			throw new ParameterException('Le maximum doit être une valeur numérique.');
 		}
 		
-		return ($value <= ((int) $maximum));
+		if(! is_numeric($value))
+		{
+			$this->_error_message = 'La valeur doit être une valeur numérique.';
+			return FALSE;	
+		}
+		
+		return ($value <= $maximum);
 	}
 	
 	/********************************************************************************/
