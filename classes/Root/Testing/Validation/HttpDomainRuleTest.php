@@ -26,7 +26,7 @@ class HttpDomainRuleTest extends ExceptRequiredRuleTest {
 	 * Domaine incorrect
 	 * @return bool
 	 */
-	protected function _invalidDomain() : bool
+	protected function _invalidDomainTest() : bool
 	{
 		$this->_validation->setData([
 			'value' => [ 'test', ],
@@ -38,7 +38,7 @@ class HttpDomainRuleTest extends ExceptRequiredRuleTest {
 	 * Domaine valide
 	 * @return bool
 	 */
-	protected function _validDomain() : bool
+	protected function _validDomainTest() : bool
 	{
 		$this->_validation->setData([
 			'value' => 'www.test.info',

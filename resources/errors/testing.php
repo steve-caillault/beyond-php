@@ -19,5 +19,7 @@ return [
 		'min_length' => 'La valeur ne doit pas avoir moins de :min caractères.',
 		'min' => 'La valeur ne doit pas être inférieur à :min.',
 		'numeric' => 'La valeur doit être un nombre.',
+		'string' => 'La valeur n\'est pas une chaine de caractères.',
+		'upload_valid' => 'Erreur lors du téléchargement du fichier.',
 	],
 ];

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Test sur la règle de validation numeric
+ * Test sur la règle de validation string
  */
 
 namespace Root\Testing\Validation;
 
-class NumericRuleTest extends ExceptRequiredRuleTest {
+class StringRuleTest extends ExceptRequiredRuleTest {
 	
-	protected const CURRENT_RULE = 'numeric';
+	protected const CURRENT_RULE = 'string';
 	
 	/**
 	 * Règles de validation
@@ -31,7 +31,7 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 		$this->_validation->setData([
 			'value' => 'Pascale Fautrier',
 		]);
-		return $this->_valueWithRuleError();
+		return $this->_isValid();
 	}
 	
 	/**
@@ -41,11 +41,11 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	protected function _isBooleanTest() : bool
 	{
 		$this->_validation->setData([
-			'value' => TRUE,
+			'value' => FALSE,
 		]);
 		return $this->_valueWithRuleError();
 	}
-
+	
 	/**
 	 * La valeur est un tableau
 	 * @return bool
@@ -53,7 +53,7 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	protected function _isArrayTest() : bool
 	{
 		$this->_validation->setData([
-			'value' => [ 'Philippe Lançon', ],
+			'value' => [ 'Robert Louis Stevenson', ],
 		]);
 		return $this->_valueWithRuleError();
 	}
@@ -66,7 +66,7 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	{
 		$this->_validation->setData([
 			'value' => new class {},
-		]);
+			]);
 		return $this->_valueWithRuleError();
 	}
 	
@@ -78,8 +78,8 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	{
 		$this->_validation->setData([
 			'value' => 12.5,
-			]);
-		return $this->_isValid();
+		]);
+		return $this->_valueWithRuleError();
 	}
 	
 	/**
@@ -91,32 +91,9 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 		$this->_validation->setData([
 			'value' => 5,
 		]);
-		return $this->_isValid();
+		return $this->_valueWithRuleError();
 	}
 	
-	/**
-	 * La valeur est un nombre négatif
-	 * @return bool
-	 */
-	protected function _isNegativeTest() : bool
-	{
-		$this->_validation->setData([
-			'value' => -16,
-		]);
-		return $this->_isValid();
-	}
-	
-	/**
-	 * La valeur est égale à 0
-	 * @return bool
-	 */
-	protected function _isZeroTest() : bool
-	{
-		$this->_validation->setData([
-			'value' => 0,
-		]);
-		return $this->_isValid();
-	}
 	
 	/*********************************************************/
 	
@@ -128,7 +105,7 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	 */
 	protected function _defaultMessageTest() : bool
 	{
-		$expectedMessage = 'La valeur doit être une valeur numérique.';
+		$expectedMessage = 'La valeur doit être une chaine de caractères.';
 		$this->_validation->setData([
 			'value' => FALSE,
 		]);
@@ -143,10 +120,10 @@ class NumericRuleTest extends ExceptRequiredRuleTest {
 	 */
 	protected function _fileMessageTest() : bool
 	{
-		$expectedMessage = 'La valeur doit être un nombre.';
+		$expectedMessage = 'La valeur n\'est pas une chaine de caractères.';
 		$this->_validation->setFileErrors('testing');
 		$this->_validation->setData([
-			'value' => 'test',
+			'value' => 56,
 		]);
 		$this->_validation->validate();
 		$error = $this->_validation->error('value');
