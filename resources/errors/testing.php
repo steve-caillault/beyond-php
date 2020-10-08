@@ -21,5 +21,7 @@ return [
 		'numeric' => 'La valeur doit être un nombre.',
 		'string' => 'La valeur n\'est pas une chaine de caractères.',
 		'upload_valid' => 'Erreur lors du téléchargement du fichier.',
+		'upload_size' => 'Le fichier ne doit peser plus de :size Mo.',
+		'upload_extensions' => 'Le fichier doit avoir une extension de type :types.',
 	],
 ];

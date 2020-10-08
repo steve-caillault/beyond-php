@@ -7,6 +7,7 @@
 namespace Root\Validation\Rules;
 
 use Root\{ File, Arr };
+use Root\Exceptions\Validation\Rules\ParameterException;
 
 class UploadExtensionsRule extends Rule {
 	
@@ -33,7 +34,12 @@ class UploadExtensionsRule extends Rule {
 			return TRUE;
 		}
 		
-		$extensions = $this->_getParameter('types', []);
+		$extensions = $this->_getParameter('types');
+		if(! is_array($extensions) OR count($extensions) == 0)
+		{
+			throw new ParameterException('Les extensions autorisées doivent être dans un tableau.');
+		}
+		
 		$filename = Arr::get($this->_getValue(), 'name');
 		$extension = File::extension($filename);
 		return (in_array($extension, $extensions));

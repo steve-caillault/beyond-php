@@ -7,6 +7,7 @@
 namespace Root\Validation\Rules;
 
 use Root\Arr;
+use Root\Exceptions\Validation\Rules\ParameterException;
 
 class UploadSizeRule extends Rule {
 	
@@ -38,10 +39,21 @@ class UploadSizeRule extends Rule {
 			return TRUE;
 		}
 		
-		$size = Arr::get($this->_getValue(), 'size', 0);
-		$sizeAllowed = $this->_getParameter('size', 1) * self::SIZE_MEGA; 
+		$maximumSize = $this->_getParameter('size'); 
+		if(! is_numeric($maximumSize) OR $maximumSize <= 0)
+		{
+			throw new ParameterException('La taille maximum du fichier doit être un entier strictement positif.');
+		}
 		
-		return ($size < $sizeAllowed);
+		$fileSize = Arr::get($this->_getValue(), 'size', 0);
+		if(! is_numeric($fileSize) OR $fileSize <= 0)
+		{
+			$this->_error_message = 'Le fichier est vide.';
+			return FALSE;	
+		}
+		
+		$allowedSize = $maximumSize * self::SIZE_MEGA;
+		return ($fileSize < $allowedSize);
 	}
 	
 	/********************************************************************************/
