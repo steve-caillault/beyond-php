@@ -18,5 +18,6 @@ return [
 		'max' => 'La valeur ne doit pas être supérieure à :max.',
 		'min_length' => 'La valeur ne doit pas avoir moins de :min caractères.',
 		'min' => 'La valeur ne doit pas être inférieur à :min.',
+		'numeric' => 'La valeur doit être un nombre.',
 	],
 ];
