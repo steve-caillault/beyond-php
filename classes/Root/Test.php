@@ -20,6 +20,12 @@ abstract class Test extends ExecutableRequest {
 	 */
 	private array $_messages = [];
 	
+	/**
+	 * Vrai si on peut ajouter le résultat du test dans le message
+	 * @var bool
+	 */
+	protected bool $_can_add_message = TRUE;
+	
 	/********************************************/
 	
 	/**
@@ -75,6 +81,25 @@ abstract class Test extends ExecutableRequest {
 		return new Response($response);
 	}
 	
+	/**
+	 * Ajoute un message à afficher
+	 * @param string $message
+	 * @return void
+	 */
+	public function addMessage(string $message) : void
+	{
+		$this->_messages[] = $message;
+	}
+	
+	/**
+	 * Retourne si le test s'est exécuté avec succès
+	 * @return bool
+	 */
+	public function success() : bool
+	{
+		return $this->_success;
+	}
+	
 	/********************************************/
 	
 	/**
@@ -85,6 +110,11 @@ abstract class Test extends ExecutableRequest {
 	 */
 	private function _addLogResult(string $method, bool $success) : void
 	{
+		if(! $this->_can_add_message)
+		{
+			return;
+		}
+		
 		$color = ($success) ? 'green' : 'red';
 		$colors = [
 			'red' => '0;31',

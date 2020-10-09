@@ -6,12 +6,31 @@
 
 namespace Root\Request;
 
-use Root\Response;
+use Root\{ Response, Test };
 use Root\Route\TestingRoute as Route;
 
 class TestingRequest extends AbstractRequest {
 	
 	protected const ROUTE_CLASS = Route::class;
+	
+	/**
+	 * Test affecté à la requête
+	 * @var Test
+	 */
+	protected Test $_test;
+	
+	/********************************************************************************/
+	
+	/**
+	 * Retourne le test affecté à la requête
+	 * @return Test
+	 */
+	public function test() : Test
+	{
+		return $this->_test;
+	}
+	
+	/********************************************************************************/
 	
 	/**
 	 * Réponse de la requête
@@ -39,6 +58,7 @@ class TestingRequest extends AbstractRequest {
 		
 		$test = new $testClass;
 		$test->request($this);
+		$this->_test = $test;
 		
 		$test->before();
 		$test->execute();

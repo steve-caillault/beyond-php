@@ -53,7 +53,7 @@ abstract class AbstractRequest extends Instanciable {
 	 * 		'route': <AbstractRoute>, // Route de la requête
 	 * )
 	 */
-	protected function __construct(array $params = [])
+	public function __construct(array $params = [])
 	{
 		$routeClass = static::ROUTE_CLASS;
 		$this->_route = Arr::get($params, 'route', $routeClass::current());

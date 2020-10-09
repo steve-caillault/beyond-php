@@ -28,13 +28,19 @@ class TestingRoute extends CommandLine {
 	 */
 	private string $_method = '_executeAll';
 	
+	/**
+	 * Liste des classes
+	 * @var array
+	 */
+	private static ?array $_list = NULL;
+	
 	/************************************************************************/
 	
 	/**
 	 * Constructeur
 	 * @param array $params
 	 */
-	private function __construct(array $params)
+	public function __construct(array $params)
 	{
 		$test = Arr::get($params, 'test');
 		if($test === NULL)
@@ -54,6 +60,31 @@ class TestingRoute extends CommandLine {
 	}
 	
 	/************************************************************************/
+	
+	/**
+	 * Retourne la liste des classes des routes
+	 * @return array
+	 */
+	public static function routeClasses() : array
+	{
+		if(self::$_list === NULL)
+		{
+			$files = array_merge(
+				Directory::files('classes/Root/Testing/'),
+				Directory::files('classes/App/Testing/')
+			);
+			
+			$classes = [];
+			foreach($files as $file)
+			{
+				$class = '\\' . strtr(rtrim(ltrim($file, 'classes/'), '.php'), [ '/' => '\\' ]);
+				$classes[] = $class;
+			}
+			
+			self::$_list = $classes;
+		}
+		return self::$_list;
+	}
 	
 	/**
 	 * Recherche la requête courante
@@ -79,12 +110,6 @@ class TestingRoute extends CommandLine {
 		
 		$expectedName = ($methodPosition !== FALSE) ? substr($parameter, 0, $methodPosition) : $parameter;
 		
-	
-		$files = array_merge(
-			Directory::files('classes/Root/Testing/'),
-			Directory::files('classes/App/Testing/')
-		);
-		
 		// Fonction retournant le nom du test à partir de sa classe
 		$getName = function($class) {
 			$directories = [ '\App\Testing\\', '\Root\Testing\\', ];
@@ -96,16 +121,14 @@ class TestingRoute extends CommandLine {
 			return $name;
 		};
 		
-		foreach($files as $file)
+		$routeClasses = self::routeClasses();
+		foreach($routeClasses as $class)
 		{
-			$class = '\\' . strtr(rtrim(ltrim($file, 'classes/'), '.php'), [ '/' => '\\' ]);
-			
 			$name = $getName($class);
 			if($name != $expectedName)
 			{
 				continue;
 			}
-			
 			return new static([
 				'test' => $class,
 				'name' => $name,
