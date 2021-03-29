@@ -31,7 +31,11 @@ class DateRule extends Rule {
 		if($dateFormat !== NULL)
 		{
 			$this->_error_message = 'La valeur doit respecter le format :format.';
-			$valid = (DateTime::createFromFormat($dateFormat, $value) !== FALSE);
+			try {
+				$valid = (DateTime::createFromFormat($dateFormat, $value) !== FALSE);
+			} catch(\Error $exception) {
+				$valid = FALSE;
+			}
 		}
 		else
 		{

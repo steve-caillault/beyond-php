@@ -87,18 +87,23 @@ class InArrayRuleTest extends WithParametersRuleTest {
 	 */
 	protected function _arrayParameterWithObjectTest() : bool
 	{
-		$array = [
-			new class {} => [
-				'v1' => 1, 
-				'v2' => -12,
-			],
-			[ 'test' ] => new class {},
-			[
-				'value1' => 10,
-				'value2' => TRUE,
-			],
-			'test-value' => new class {},
-		];
+		try {
+			$array = [
+				new class {} => [
+					'v1' => 1, 
+					'v2' => -12,
+				],
+				[ 'test' ] => new class {},
+				[
+					'value1' => 10,
+					'value2' => TRUE,
+				],
+				'test-value' => new class {},
+			];
+		} catch(\Error $exception) {
+			$array = [];
+		}
+		
 		$this->_validation->setData([
 			'value' => 'piment',
 		]);
@@ -109,7 +114,8 @@ class InArrayRuleTest extends WithParametersRuleTest {
 				]),
 			],
 		]);
-		return $this->_valueWithRuleError();
+		
+		return $this->_checkIncorrectRuleParameters();
 	}
 	
 	/**

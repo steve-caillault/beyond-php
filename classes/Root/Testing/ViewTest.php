@@ -37,7 +37,8 @@ class ViewTest extends Test {
 		$success = FALSE;
 		
 		try {
-			(new View('testing/view'))->render();
+			$viewPath = 'testing/view/' . time();
+			(new View($viewPath))->render();
 		} catch(\Exception $exception) {
 			$success = TRUE;
 		}
