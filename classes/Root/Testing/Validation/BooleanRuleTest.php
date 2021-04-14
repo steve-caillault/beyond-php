@@ -31,7 +31,7 @@ class BooleanRuleTest extends ExceptRequiredRuleTest {
 		$this->_validation->setData([
 			'value' => 32,
 		]);
-		return FALSE; // $this->_valueWithRuleError();
+		return $this->_valueWithRuleError();
 	}
 	
 	/**
