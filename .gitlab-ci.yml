@@ -1,0 +1,29 @@
+image: php:8.0
+
+before_script:
+    # Install git, the php image doesn't have installed
+    - apt-get update -yqq
+    - apt-get install git -yqq
+
+    # Install mysql driver
+    #- docker-php-ext-install pdo_mysql
+
+    # Install composer
+    #- curl -sS https://getcomposer.org/installer | php
+
+    # Install all project dependencies
+    #- php composer.phar install
+
+
+stages:
+    #- build
+    - test
+
+#build_job:
+    #stage: build
+
+
+test_job:
+    stage: test
+    script:
+        - php test AllTest
