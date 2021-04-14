@@ -5,4 +5,9 @@ require('./classes/Root/Core.php');
 
 Root\Core::initialize();
 
-echo Root\Request\TestingRequest::current()->response();
+$request = Root\Request\TestingRequest::current();
+
+echo $request->response() . PHP_EOL;
+
+$exitCode = ($request->test()->success()) ? 0 : 1;
+exit($exitCode);
