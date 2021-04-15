@@ -12,6 +12,8 @@ before_script:
     # Create the SSH directory and give it the right permissions
     - mkdir -p ~/.ssh
     - chmod 600 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - cat ~/.ssh/config
 
 
     # Install mysql driver
