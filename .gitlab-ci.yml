@@ -41,7 +41,8 @@ test_job:
 deploy_staging:
     stage: deploy
     script:
-        - ssh $SSH_HOST
+        - echo $SSH_HOST
+        - ssh -tt $SSH_HOST
         - ls -la
         - exit
     environment:
