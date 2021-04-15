@@ -41,7 +41,9 @@ test_job:
 deploy_staging:
     stage: deploy
     script:
-        - export
+        - ssh $SSH_HOST
+        - ls -la
+        - exit
     environment:
         name: staging
     only:
