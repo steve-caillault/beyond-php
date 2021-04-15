@@ -38,7 +38,7 @@ test_job:
     script:
         - php test AllTest
 
-deploy_staging
+deploy_staging:
     stage: deploy
     script:
         - export
