@@ -6,14 +6,13 @@ before_script:
     - apt-get install git -yqq
     # Install ssh-agent if not already installed, it is required by Docker.
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
-    # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     # Create the SSH directory and give it the right permissions
     - mkdir -p ~/.ssh
     - chmod 600 ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    - cat ~/.ssh/config
+    # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
 
     # Install mysql driver
