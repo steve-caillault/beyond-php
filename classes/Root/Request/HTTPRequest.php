@@ -214,7 +214,8 @@ class HTTPRequest extends AbstractRequest {
 	 */
 	public function isAjax() : bool
 	{
-		return (strtolower(Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL)) == 'xmlhttprequest');
+		$requestedWith = Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH') ?: '';
+		return (strtolower($requestedWith) === 'xmlhttprequest');
 	}
 	
 	/********************************************************************************/
