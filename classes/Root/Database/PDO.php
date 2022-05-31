@@ -120,7 +120,7 @@ class PDO extends Database {
 		{
 			return ConnectionPDO::PARAM_BOOL;
 		}
-		elseif(is_int($variable) OR ctype_digit($variable))
+		elseif(is_int($variable) OR ctype_digit((string) $variable))
 		{
 			return ConnectionPDO::PARAM_INT;
 		}
