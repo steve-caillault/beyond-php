@@ -41,7 +41,7 @@ abstract class AbstractImage {
 	 */
 	public function __construct(private string $filepath)
 	{
-		$this->resource = $this->initResource();
+
 	}
 	
 	/**********************************************************************************/
@@ -51,6 +51,17 @@ abstract class AbstractImage {
 	 * @return \GdImage
 	 */
 	abstract protected function initResource() : \GdImage;
+
+	/**
+	 * Modifie la ressource de l'image
+	 * @param \GdImage $resource
+	 * @return self
+	 */
+	private function setResource(\GdImage $resource) : self
+	{
+		$this->resource = $resource;
+		return $this;
+	}
 	
 	/**********************************************************************************/
 	
@@ -90,7 +101,7 @@ abstract class AbstractImage {
 		$this->setDimensions($width, $height);
 		
 		$imageDest = imagecreatetruecolor($width, $height);
-		imagecopyresampled($imageDest, $this->resource, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
+		imagecopyresampled($imageDest, $this->getResource(), 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
 		$this->resource = $imageDest;
 	}
 	
@@ -151,6 +162,24 @@ abstract class AbstractImage {
 	abstract protected function display() : void;
 
 	/**
+	 * Convertit l'image vers le type en paramètre
+	 * @param ImageTypeEnum $conversionType
+	 * @param string $conversionFilepath
+	 * @return self
+	 */
+	public function convert(ImageTypeEnum $conversionType, string $conversionFilepath) : self
+	{
+		$conversionImage = (new ImageFactory())->getFromType(
+			type: $conversionType,
+			filepath: $conversionFilepath
+		);
+
+		$conversionImage->setResource($this->getResource());
+
+		return $conversionImage;
+	}
+
+	/**
 	 * Enregistre l'image
 	 * @param int $quality
 	 * @return bool
@@ -181,9 +210,9 @@ abstract class AbstractImage {
 	 * Retourne la ressource de l'image
 	 * @return \GdImage
 	 */
-	protected function getResource() : \GdImage
+	public function getResource() : \GdImage
 	{
-		return $this->resource;
+		return $this->resource ??= $this->initResource();
 	}
 
 	/**********************************************************************************/
