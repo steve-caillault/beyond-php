@@ -10,4 +10,6 @@
     case JPEG = 'jpg';
     case PNG = 'png';
     case GIF = 'gif';
+    case AVIF = 'avif';
+    case WEBP = 'webp';
  }
