@@ -4,47 +4,31 @@
  * Gestion d'une image
  */
 
-namespace Root;
+namespace Root\Image;
 
-abstract class Image {
+use Root\Arr;
 
-	/**
-	 * Types de fichiers autorisés
-	 * @var array
-	 */
-	private const ALLOWED_TYPES = [
-		IMAGETYPE_GIF 	=> 'gif',
-		IMAGETYPE_JPEG	=> 'jpg',
-		IMAGETYPE_PNG	=> 'png',
-	];
-	
-	/**********************************************************************************/
-	
+abstract class AbstractImage {
+
 	/**
 	 * Type d'image
-	 * @var string
+	 * @var ImageTypeEnum
 	 */
-	protected string $_type;
-	
-	/**
-	 * Chemin de l'image
-	 * @var string
-	 */
-	protected string $_filepath;
+	protected ImageTypeEnum $type;
 	
 	/**
 	 * Ressource de l'mage
-	 * @var resource
+	 * @var \GdImage
 	 */
-	protected $_resource = NULL;
+	private \GdImage $resource;
 	
 	/**
 	 * Dimensions de l'image
 	 * @var array
 	 */
-	private array $_dimensions = [
-		'width' => NULL,
-		'height' => NULL,
+	private array $dimensions = [
+		'width' => null,
+		'height' => null,
 	];
 	
 	/**********************************************************************************/
@@ -53,39 +37,20 @@ abstract class Image {
 	
 	/**
 	 * Constructeur
-	 * @param string $filepath
+	 * @param string $filepath Chemin de l'image
 	 */
-	protected function __construct(string $filepath)
+	public function __construct(private string $filepath)
 	{
-		$this->_filepath = $filepath;
-		$this->_resource = $this->_initResource();
-	}
-	
-	/**
-	 * Instanciation
-	 * @param string $filepath
-	 * @return self
-	 */
-	public static function factory(string $filepath) : self
-	{
-		// Vérifit le type de fichier
-		$type = exif_imagetype($filepath);
-		if(! array_key_exists($type, self::ALLOWED_TYPES))
-		{
-			exception('Type de fichier non autorisé.');
-		}
-		
-		$class = __NAMESPACE__ . '\Image\Image' . strtoupper(Arr::get(self::ALLOWED_TYPES, $type));
-		return new $class($filepath);
+		$this->resource = $this->initResource();
 	}
 	
 	/**********************************************************************************/
 	
 	/**
 	 * Initialise la ressource
-	 * @return resource
+	 * @return \GdImage
 	 */
-	abstract protected function _initResource();
+	abstract protected function initResource() : \GdImage;
 	
 	/**********************************************************************************/
 	
@@ -100,15 +65,15 @@ abstract class Image {
 		$originalWidth = Arr::get($originalDimensions, 'width');
 		$originalHeight = Arr::get($originalDimensions, 'height');
 		
-		// Modifit les dimensions pour respecter les proportions
+		// Modifie les dimensions pour respecter les proportions
 		
-		if($width !== NULL OR $height !== NULL)
+		if($width !== null or $height !== null)
 		{
-			if($height === NULL AND $width !== NULL)
+			if($height === null and $width !== null)
 			{
 				$height = $originalHeight * ($width / $originalWidth);  
 			}
-			elseif($width === NULL AND $height !== NULL)
+			elseif($width === null and $height !== null)
 			{
 				$width = $originalWidth * ($height / $originalHeight);
 			}
@@ -122,20 +87,20 @@ abstract class Image {
 			}
 		}
 		
-		$this->_setDimensions($width, $height);
+		$this->setDimensions($width, $height);
 		
 		$imageDest = imagecreatetruecolor($width, $height);
-		imagecopyresampled($imageDest, $this->_resource, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
-		$this->_resource = $imageDest;
+		imagecopyresampled($imageDest, $this->resource, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
+		$this->resource = $imageDest;
 	}
 	
 	/**
-	 * Modifit les dimensions de l'image
+	 * Modifie les dimensions de l'image
 	 * @param float $width
 	 * @param float $height
 	 * @return void
 	 */
-	private function _setDimensions(float $width, float $height) : void
+	private function setDimensions(float $width, float $height) : void
 	{
 	    $this->_dimensions = [
 	        'width' => $width,
@@ -149,19 +114,19 @@ abstract class Image {
 	 */
 	 public function getDimensions() : array
 	 {
-	 	$width = Arr::get($this->_dimensions, 'width');
-	 	$height = Arr::get($this->_dimensions, 'height');
+	 	$width = Arr::get($this->dimensions, 'width');
+	 	$height = Arr::get($this->dimensions, 'height');
 	 	
-	 	if($width === NULL OR $height === NULL)
+	 	if($width === null or $height === NULL)
 	 	{
 	 		list($width, $height) = getimagesize($this->_filepath);
-	 		$this->_dimensions = [
+	 		$this->dimensions = [
 	 			'width' => $width,
 	 			'height' => $height,
 	 		];
 	 	}
 	 	
-	 	return $this->_dimensions;
+	 	return $this->dimensions;
 	}
 	
 	/**********************************************************************************/
@@ -170,10 +135,10 @@ abstract class Image {
 	 * Retourne le contenu de l'image
 	 * @return string
 	 */
-	public function getContent() : string
+	public function getContents() : string
 	{
 	    ob_start();
-	    $this->_getContent();
+	    $this->display();
 	    $content = ob_get_contents();
 	    ob_end_clean();
 	    return $content;
@@ -183,7 +148,7 @@ abstract class Image {
 	 * Affichage de l'image
 	 * @return void
 	 */
-	abstract protected function _getContent() : void;
+	abstract protected function display() : void;
 
 	/**
 	 * Enregistre l'image
@@ -192,16 +157,36 @@ abstract class Image {
 	 */
 	abstract public function save(int $quality = 100) : bool;
 	
-	/**
-	 * Retourne le type d'image
-	 * @return string
-	 */
-	public function type() : string
-	{
-	    return $this->_type;
-	}
-	
 	/**********************************************************************************/
 	
+	/**
+	 * Retourne le chemin du fichier
+	 * @return string
+	 */
+	protected function getFilepath() : string
+	{
+		return $this->filepath;
+	}
+
+	/**
+	 * Retourne le type d'image
+	 * @return ImageTypeEnum
+	 */
+	public function getType() : ImageTypeEnum
+	{
+	    return $this->type;
+	}
+
+	/**
+	 * Retourne la ressource de l'image
+	 * @return \GdImage
+	 */
+	protected function getResource() : \GdImage
+	{
+		return $this->resource;
+	}
+
+	/**********************************************************************************/
+
 }
 	

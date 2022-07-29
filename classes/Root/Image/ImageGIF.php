@@ -6,32 +6,30 @@
 
 namespace Root\Image;
 
-use Root\Image;
-
-class ImageGIF extends Image {
+final class ImageGIF extends AbstractImage {
 	
 	/**
 	 * Type d'image
-	 * @param string
+	 * @param ImageTypeEnum
 	 */
-	protected string $_type = 'gif';
+	protected ImageTypeEnum $type = ImageTypeEnum::GIF;
 	
 	/**
 	 * Initialise la ressource
-	 * @return Resource
+	 * @return \GdImage
 	 */
-	protected function _initResource()
+	protected function initResource() : \GdImage
 	{
-		return imagecreatefromgif($this->_filepath);
+		return imagecreatefromgif($this->getFilepath());
 	}
 	
 	/**
 	 * Affichage de l'image
 	 * @return void
 	 */
-	protected function _getContent() : void
+	protected function display() : void
 	{
-		imagegif($this->_resource);
+		imagegif($this->getResource());
 	}
 	
 	/**
@@ -41,7 +39,7 @@ class ImageGIF extends Image {
 	 */
 	public function save(int $quality = 100) : bool
 	{
-		return imagegif($this->_resource, $this->_filepath);
+		return imagegif($this->getResource(), $this->getFilepath());
 	}
 	
 }

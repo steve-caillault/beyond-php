@@ -6,32 +6,30 @@
 
 namespace Root\Image;
 
-use Root\Image;
-
-class ImageJPG extends Image {
+final class ImageJPG extends AbstractImage {
 	
 	/**
 	 * Type d'image
-	 * @param string
+	 * @param ImageTypeEnum
 	 */
-	protected string $_type = 'jpg';
+	protected ImageTypeEnum $type = ImageTypeEnum::JPEG;
 	
 	/**
 	 * Initialise la ressource
-	 * @return Resource
+	 * @return \GdImage
 	 */
-	protected function _initResource()
+	protected function initResource() : \GdImage
 	{
-		return imagecreatefromjpeg($this->_filepath);
+		return imagecreatefromjpeg($this->getFilepath());
 	}
 	
 	/**
 	 * Affichage de l'image
 	 * @return void
 	 */
-	protected function _getContent() : void
+	protected function display() : void
 	{
-		imagejpeg($this->_resource);
+		imagejpeg($this->getResource());
 	}
 	
 	/**
@@ -41,7 +39,7 @@ class ImageJPG extends Image {
 	 */
 	public function save(int $quality = 100) : bool
 	{
-		return imagejpeg($this->_resource, $this->_filepath, $quality);
+		return imagejpeg($this->getResource(), $this->getFilepath(), $quality);
 	}
 	
 }
